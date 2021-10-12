@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { useWorkspace } from '$utils/useWorkspace';
+	import { connected } from 'process';
 
 	let useWalletStore, value;
 
@@ -60,17 +61,58 @@
 </script>
 
 <div>
-	<h1>Welcome to SvelteKit</h1>
-	<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+	<div class="title">
+		<h1>Solana Svelte Counter</h1>
+		<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+	</div>
 
-	<button on:click={() => selectWallet('Phantom')}>select Phantom</button>
-	<button on:click={() => $useWalletStore.disconnect('walletAdapter')}>disconnect wallet</button>
+	<div class="wrapper-content">
+		{#if $useWalletStore?.connected}
+			<button on:click={() => $useWalletStore.disconnect('walletAdapter')}>disconnect wallet</button
+			>
+		{:else}
+			<button on:click={() => selectWallet('Phantom')}>select Phantom</button>
+		{/if}
+	</div>
 
-	<p>My wallet address!!</p>
-	{#if address}
-		<p>{address}</p>
-	{/if}
+	<div class="address">
+		<p>My wallet address!!</p>
+		{#if address}
+			<p>{address}</p>
+		{/if}
+	</div>
 
-	<button on:click={createCounter}>createCounter</button>
-	<button on:click={increment}>increment</button>
+	<div class="wrapper-content">
+		{#if value}
+			<button on:click={increment}>increment</button>
+			<p>Value: {value}</p>
+		{:else}
+			<button on:click={createCounter}>createCounter</button>
+		{/if}
+	</div>
 </div>
+
+<style>
+	.title {
+		text-align: center;
+	}
+
+	.address {
+		position: absolute;
+		right: 30px;
+		top: 30px;
+		border: 1px solid blueviolet;
+		border-radius: 5px;
+		padding: 10px;
+	}
+
+	.wrapper-content {
+		border: 1px solid blueviolet;
+		border-radius: 5px;
+		padding: 10px;
+		width: 400px;
+		margin: 0 auto;
+		text-align: center;
+		margin-bottom: 30px;
+	}
+</style>
