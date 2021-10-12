@@ -1,5 +1,5 @@
 [programs.localnet]
-solana_svelte_counter = "14n9TE6HYfXCzx8Lf95zhD9u1gHxfn892obqYBUJrqSv"
+solana_svelte_counter = "Ae2J3Cn2Vtrm4jc9dJiWtBZ16Pxd5xTtFNGAhKT2Djwm"
 
 [registry]
 url = "https://anchor.projectserum.com"

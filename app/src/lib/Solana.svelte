@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
-	import { Connection, PublicKey, clusterApiUrl } from '@solana/web3.js';
+	import { Connection } from '@solana/web3.js';
 	import { useWorkspace } from '$utils/useWorkspace';
 	import { Program, Provider, web3 } from '@project-serum/anchor';
 	import type { useWalletStoreT, useWalletMethods } from '$utils/useWallet';
@@ -45,6 +45,7 @@
 	$: useWalletStore &&
 		defineProgramAndProvider($useWalletStore as useWalletStoreT | useWalletMethods);
 
+	const { PublicKey } = web3;
 	const programID = new PublicKey(idl.metadata.address);
 	const baseAccount = web3.Keypair.generate();
 	const systemProgram = web3.SystemProgram;

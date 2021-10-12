@@ -45,9 +45,9 @@ export interface useWalletMethods {
 		connection: Connection,
 		options?: SendTransactionOptions
 	): Promise<TransactionSignature>;
-	signTransaction(): Promise<Transaction>;
-	signAllTransactions(): Promise<Transaction[]>;
-	signMessage(): Promise<Uint8Array>;
+	signTransaction(transaction: Transaction): Promise<Transaction>;
+	signAllTransactions(transaction: Transaction): Promise<Transaction[]>;
+	signMessage(message: Uint8Array): Promise<Uint8Array>;
 }
 
 export const useWalletStore = writable<useWalletStoreT>({
@@ -327,38 +327,31 @@ const sendTransaction = async (
 };
 
 // Sign a transaction if the wallet supports it.
-const signTransaction = () => {
+const signTransaction = async (transaction: Transaction): Promise<Transaction> => {
 	const { connected } = get(useWalletStore);
 	const { adapter } = get(useWalletAdapter);
 	if (!(adapter && 'signTransaction' in adapter)) return;
-	console.log(`signTransaction 1`)
-	return async (transaction: Transaction) => {
-		console.log(`signTransaction 2`)
-		if (! connected) throw newError(new WalletNotConnectedError());
-		return await adapter.signTransaction(transaction);
-	}
+	if (! connected) throw newError(new WalletNotConnectedError());
+	return await adapter.signTransaction(transaction);
 };
 
 // Sign multiple transactions if the wallet supports it
-const signAllTransactions = () => {
+const signAllTransactions = async (transactions: Transaction[]): Promise<Transaction[]> => {
 	const { connected } = get(useWalletStore);
 	const { adapter } = get(useWalletAdapter);
 	if (! (adapter && 'signAllTransactions' in adapter)) return;
-	return async (transactions: Transaction[]) => {
-		if (! connected) throw newError(new WalletNotConnectedError());
-		return await adapter.signAllTransactions(transactions);
-	}
+	if (! connected) throw newError(new WalletNotConnectedError());
+	return await adapter.signAllTransactions(transactions);
+
 };
 
 // Sign an arbitrary message if the wallet supports it.
-const signMessage = () => {
+const signMessage = async (message: Uint8Array): Promise<Uint8Array> => {
 	const { connected } = get(useWalletStore);
 	const { adapter } = get(useWalletAdapter);
 	if (! (adapter && 'signMessage' in adapter)) return;
-	return async (message: Uint8Array) => {
-		if (! connected) throw newError(new WalletNotConnectedError());
-		return await adapter.signMessage(message);
-	}
+	if (! connected) throw newError(new WalletNotConnectedError());
+	return await adapter.signMessage(message);
 };
 
 // Wallet exported

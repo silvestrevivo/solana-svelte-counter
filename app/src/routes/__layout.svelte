@@ -4,6 +4,7 @@
 	import idl from '../../../target/idl/solana_svelte_counter.json';
 
 	const localStorageKey = 'walletAdapter';
+	const network = 'http://127.0.0.1:8899';
 
 	let wallets;
 
@@ -45,7 +46,7 @@
 	});
 </script>
 
-<Solana {idl} {localStorageKey} {wallets} network="http://localhost:8899"/>
+<Solana {idl} {localStorageKey} {wallets} {network} />
 <div>
 	<slot />
 </div>

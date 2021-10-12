@@ -3,7 +3,6 @@
 	import { useWorkspace } from '$utils/useWorkspace';
 
 	let useWalletStore, value;
-	$: console.log('value: ', value);
 
 	onMount(async () => {
 		const { useWallet } = await import('../utils/useWallet');
@@ -57,6 +56,29 @@
 		console.log('account: ', account);
 		value = account.count.toString();
 	}
+
+	// async function initialize() {
+	// 	// const systemProgram = web3.SystemProgram;
+	// 	/* create the program interface combining the idl, program ID, and provider */
+	// 	try {
+	// 		/* interact with the program via rpc */
+	// 		await $useWorkspace.program.rpc.initialize('Hello World', {
+	// 			accounts: {
+	// 				baseAccount: baseAccount.publicKey,
+	// 				user: $useWorkspace.provider.wallet.publicKey,
+	// 				systemProgram: web3.SystemProgram.programId
+	// 			},
+	// 			signers: [baseAccount]
+	// 		});
+
+	// 		const account = await $useWorkspace.program.account.baseAccount.fetch(baseAccount.publicKey);
+	// 		console.log('account: ', account);
+	// 	} catch (err) {
+	// 		console.log('Transaction error: ', err);
+	// 	}
+	// }
+
+	$: console.log('value: ', value);
 </script>
 
 <div>

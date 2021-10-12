@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-declare_id!("14n9TE6HYfXCzx8Lf95zhD9u1gHxfn892obqYBUJrqSv");
+declare_id!("Ae2J3Cn2Vtrm4jc9dJiWtBZ16Pxd5xTtFNGAhKT2Djwm");
 
 #[program]
 pub mod solana_svelte_counter {
