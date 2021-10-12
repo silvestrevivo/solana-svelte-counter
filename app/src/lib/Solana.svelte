@@ -70,8 +70,7 @@
 		}
 	}
 
-	$: watchWalletNameClient &&
-		watchWalletNameClient($useWalletNameStore.walletName, localStorageKey);
+	$: watchWalletNameClient && watchWalletNameClient($useWalletNameStore.walletName);
 	$: watchAdapterClient && watchAdapterClient($useWalletAdapterStore.adapter);
 	$: autoConnectWalletClient &&
 		autoConnectWalletClient({
