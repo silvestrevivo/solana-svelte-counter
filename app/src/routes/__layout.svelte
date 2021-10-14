@@ -1,7 +1,16 @@
+<script context="module">
+	console.log(`gloabl server`, globalThis);
+</script>
+
 <script lang="ts">
 	import Solana from '$lib/Solana.svelte';
 	import { onMount } from 'svelte';
 	import idl from '../../../target/idl/solana_svelte_counter.json';
+	import { Buffer } from 'buffer';
+	import process from 'process';
+
+	globalThis.Buffer = Buffer;
+	globalThis.process = process;
 
 	const localStorageKey = 'walletAdapter';
 	const network = 'http://127.0.0.1:8899';
@@ -9,10 +18,6 @@
 	let wallets;
 
 	onMount(async () => {
-		const { Buffer } = await import('buffer');
-		const process = await import('process');
-		window.Buffer = Buffer;
-		window.process = process;
 		const {
 			getPhantomWallet,
 			getBitpieWallet,

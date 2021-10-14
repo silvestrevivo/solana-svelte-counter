@@ -1,17 +1,18 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { useWorkspace } from '$utils/useWorkspace';
-	import { connected } from 'process';
 
-	let useWalletStore, value;
+	let useWallet, value;
+
+	// $: console.log('globalThis in index', globalThis.Buffer);
 
 	onMount(async () => {
-		const { useWallet } = await import('../utils/useWallet');
-		useWalletStore = useWallet;
+		const module = await import('$utils/useWallet');
+		useWallet = module.useWallet;
 	});
 
 	const selectWallet = (walletName) => {
-		$useWalletStore.select(walletName);
+		$useWallet.select(walletName);
 	};
 
 	function showAddress(useWalletStore) {
@@ -20,7 +21,7 @@
 		return base58.slice(0, 4) + '..' + base58.slice(-4);
 	}
 
-	$: address = $useWalletStore && showAddress($useWalletStore);
+	$: address = useWallet && showAddress($useWallet);
 
 	async function createCounter() {
 		try {
@@ -67,9 +68,8 @@
 	</div>
 
 	<div class="wrapper-content">
-		{#if $useWalletStore?.connected}
-			<button on:click={() => $useWalletStore.disconnect('walletAdapter')}>disconnect wallet</button
-			>
+		{#if $useWallet?.connected}
+			<button on:click={() => $useWallet.disconnect('walletAdapter')}>disconnect wallet</button>
 		{:else}
 			<button on:click={() => selectWallet('Phantom')}>select Phantom</button>
 		{/if}

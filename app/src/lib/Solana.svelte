@@ -3,47 +3,18 @@
 	import { Connection } from '@solana/web3.js';
 	import { useWorkspace } from '$utils/useWorkspace';
 	import { Program, Provider, web3 } from '@project-serum/anchor';
-	import type { useWalletStoreT, useWalletMethods } from '$utils/useWallet';
+	import type { Wallet } from '@solana/wallet-adapter-wallets';
 
-	export let idl, localStorageKey: string, wallets: unknown[], network: string;
+	export let idl, localStorageKey: string, wallets: Wallet[], network: string;
 
-	let useWalletStore,
-		useWalletNameStore,
-		useWalletAdapterStore,
-		watchWalletNameClient,
-		watchAdapterClient,
-		destroyAdapterClient,
-		autoConnectWalletClient,
-		initWalletClient;
+	let initWallet, destroyAdapter, useWallet;
 
 	onMount(async () => {
-		const {
-			useWallet,
-			useWalletName,
-			useWalletAdapter,
-			initWallet,
-			watchWalletName,
-			watchAdapter,
-			destroyAdapter,
-			autoConnectWallet
-		} = await import('../utils/useWallet');
-
-		useWalletStore = useWallet;
-		useWalletNameStore = useWalletName;
-		useWalletAdapterStore = useWalletAdapter;
-		initWalletClient = initWallet;
-		watchWalletNameClient = watchWalletName;
-		watchAdapterClient = watchAdapter;
-		destroyAdapterClient = destroyAdapter;
-		autoConnectWalletClient = autoConnectWallet;
+		const module = await import('$utils/useWallet');
+		initWallet = module.initWallet;
+		destroyAdapter = module.destroyAdapter;
+		useWallet = module.useWallet;
 	});
-
-	$: wallets &&
-		initWalletClient &&
-		initWalletClient({ wallets, autoConnect: true, localStorageKey });
-
-	$: useWalletStore &&
-		defineProgramAndProvider($useWalletStore as useWalletStoreT | useWalletMethods);
 
 	const { PublicKey } = web3;
 	const programID = new PublicKey(idl.metadata.address);
@@ -51,10 +22,10 @@
 	const systemProgram = web3.SystemProgram;
 	const connection = new Connection(network, 'processed');
 
-	function defineProgramAndProvider(useWalletStore) {
-		if (useWalletStore?.publicKey) {
+	function defineProgramAndProvider(useWallet) {
+		if (useWallet?.publicKey) {
 			let { sendTransaction, signTransaction, signAllTransactions, signMessage, publicKey } =
-				useWalletStore;
+				useWallet;
 			const providerWallet = {
 				sendTransaction,
 				signTransaction,
@@ -70,23 +41,8 @@
 		}
 	}
 
-	$: watchWalletNameClient && watchWalletNameClient($useWalletNameStore.walletName);
-	$: watchAdapterClient && watchAdapterClient($useWalletAdapterStore.adapter);
-	$: autoConnectWalletClient &&
-		autoConnectWalletClient({
-			adapter: $useWalletAdapterStore.adapter,
-			walletName: $useWalletNameStore.walletName
-		});
+	$: initWallet && wallets && initWallet({ wallets, autoConnect: true, localStorageKey });
+	$: initWallet && defineProgramAndProvider($useWallet);
 
-	onDestroy(() => {
-		if ($useWalletAdapterStore?.adapter) {
-			destroyAdapterClient($useWalletAdapterStore.adapter);
-		}
-	});
+	onDestroy(() => destroyAdapter && destroyAdapter());
 </script>
-
-<svelte:head>
-	<script>
-		window.global = window;
-	</script>
-</svelte:head>
