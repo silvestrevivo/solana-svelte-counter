@@ -16,3 +16,9 @@
 
 	onDestroy(() => destroyAdapter && destroyAdapter());
 </script>
+
+<svelte:head>
+	<script>
+		window.global = window;
+	</script>
+</svelte:head>
