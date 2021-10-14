@@ -4,11 +4,9 @@
 
 	let useWallet, value;
 
-	// $: console.log('globalThis in index', globalThis.Buffer);
-
 	onMount(async () => {
 		const module = await import('$utils/useWallet');
-		useWallet = module.useWalletStore;
+		useWallet = module.useWallet;
 	});
 
 	const selectWallet = (walletName) => {
