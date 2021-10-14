@@ -8,7 +8,7 @@
 
 	onMount(async () => {
 		const module = await import('$utils/useWallet');
-		useWallet = module.useWallet;
+		useWallet = module.useWalletStore;
 	});
 
 	const selectWallet = (walletName) => {

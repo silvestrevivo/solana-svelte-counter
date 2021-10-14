@@ -13,7 +13,7 @@
 		const module = await import('$utils/useWallet');
 		initWallet = module.initWallet;
 		destroyAdapter = module.destroyAdapter;
-		useWallet = module.useWallet;
+		useWallet = module.useWalletStore;
 	});
 
 	const { PublicKey } = web3;
