@@ -1,7 +1,3 @@
-<script context="module">
-	console.log(`gloabl server`, globalThis);
-</script>
-
 <script lang="ts">
 	import Solana from '$lib/Solana.svelte';
 	import { onMount } from 'svelte';
