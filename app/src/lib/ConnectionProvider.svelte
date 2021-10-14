@@ -1,18 +1,15 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
+	import { onMount } from 'svelte';
 	import { Connection } from '@solana/web3.js';
 	import { useWorkspace } from '$utils/useWorkspace';
 	import { Program, Provider, web3 } from '@project-serum/anchor';
-	import type { Wallet } from '@solana/wallet-adapter-wallets';
 
-	export let idl, localStorageKey: string, wallets: Wallet[], network: string;
+	export let idl, network: string;
 
-	let initWallet, destroyAdapter, useWallet;
+	let useWallet;
 
 	onMount(async () => {
 		const module = await import('$utils/useWallet');
-		initWallet = module.initWallet;
-		destroyAdapter = module.destroyAdapter;
 		useWallet = module.useWallet;
 	});
 
@@ -41,8 +38,5 @@
 		}
 	}
 
-	$: initWallet && wallets && initWallet({ wallets, autoConnect: true, localStorageKey });
-	$: initWallet && defineProgramAndProvider($useWallet);
-
-	onDestroy(() => destroyAdapter && destroyAdapter());
+	$: useWallet && defineProgramAndProvider($useWallet);
 </script>

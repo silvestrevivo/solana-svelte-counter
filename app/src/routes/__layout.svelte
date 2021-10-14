@@ -1,6 +1,7 @@
 <script lang="ts">
-	import Solana from '$lib/Solana.svelte';
 	import { onMount } from 'svelte';
+	import WalletProvider from '$lib/WalletProvider.svelte';
+	import ConnectionProvider from '$lib/ConnectionProvider.svelte';
 	import idl from '../../../target/idl/solana_svelte_counter.json';
 	import { Buffer } from 'buffer';
 	import process from 'process';
@@ -14,40 +15,14 @@
 	let wallets;
 
 	onMount(async () => {
-		const {
-			getPhantomWallet,
-			getBitpieWallet,
-			getBloctoWallet,
-			getCoin98Wallet,
-			getLedgerWallet,
-			getMathWallet,
-			getSlopeWallet,
-			getSolflareWallet,
-			getSolflareWebWallet,
-			getSolletWallet,
-			getSolletExtensionWallet,
-			getSolongWallet
-		} = await import('@solana/wallet-adapter-wallets');
-		const walletsMap = [
-			getPhantomWallet(),
-			getBitpieWallet(),
-			getBloctoWallet(),
-			getCoin98Wallet(),
-			getLedgerWallet(),
-			getMathWallet(),
-			getMathWallet(),
-			getSlopeWallet(),
-			getSolflareWallet(),
-			getSolflareWebWallet(),
-			getSolletWallet(),
-			getSolletExtensionWallet(),
-			getSolongWallet()
-		];
+		const { getPhantomWallet } = await import('@solana/wallet-adapter-wallets');
+		const walletsMap = [getPhantomWallet()];
 		wallets = walletsMap;
 	});
 </script>
 
-<Solana {idl} {localStorageKey} {wallets} {network} />
+<WalletProvider {localStorageKey} {wallets} />
+<ConnectionProvider {network} {idl} />
 <div>
 	<slot />
 </div>
