@@ -1,4 +1,5 @@
 import preprocess from 'svelte-preprocess';
+import adapter from '@sveltejs/adapter-static';
 import path from 'path';
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -11,6 +12,7 @@ const config = {
 		// hydrate the <div id="svelte"> element in src/app.html
 		target: '#svelte',
 		vite: {
+			adapter: adapter(),
       resolve: {
         alias: {
           $utils: path.resolve('src/utils/'),

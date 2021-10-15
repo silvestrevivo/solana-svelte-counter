@@ -20,23 +20,21 @@
 	const connection = new Connection(network, 'processed');
 
 	function defineProgramAndProvider(useWallet) {
-		if (useWallet?.publicKey) {
-			let { sendTransaction, signTransaction, signAllTransactions, signMessage, publicKey } =
-				useWallet;
-			const providerWallet = {
-				sendTransaction,
-				signTransaction,
-				signAllTransactions,
-				signMessage,
-				publicKey
-			};
-			const provider = new Provider(connection, providerWallet, {
-				preflightCommitment: 'processed'
-			});
-			const program = new Program(idl, programID, provider);
-			useWorkspace.set({ baseAccount, connection, provider, program, systemProgram });
-		}
+		let { sendTransaction, signTransaction, signAllTransactions, signMessage, publicKey } =
+			useWallet;
+		const providerWallet = {
+			sendTransaction,
+			signTransaction,
+			signAllTransactions,
+			signMessage,
+			publicKey
+		};
+		const provider = new Provider(connection, providerWallet, {
+			preflightCommitment: 'processed'
+		});
+		const program = new Program(idl, programID, provider);
+		useWorkspace.set({ baseAccount, connection, provider, program, systemProgram });
 	}
 
-	$: useWallet && defineProgramAndProvider($useWallet);
+	$: $useWallet && $useWallet.publicKey && defineProgramAndProvider($useWallet);
 </script>
