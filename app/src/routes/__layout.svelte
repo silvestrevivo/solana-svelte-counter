@@ -3,11 +3,6 @@
 	import WalletProvider from '$lib/WalletProvider.svelte';
 	import ConnectionProvider from '$lib/ConnectionProvider.svelte';
 	import idl from '../../../target/idl/solana_svelte_counter.json';
-	import { Buffer } from 'buffer';
-	import process from 'process';
-
-	globalThis.Buffer = Buffer;
-	globalThis.process = process;
 
 	const localStorageKey = 'walletAdapter';
 	const network = 'http://127.0.0.1:8899';
@@ -21,7 +16,7 @@
 	});
 </script>
 
-<WalletProvider {localStorageKey} {wallets} />
+<WalletProvider {localStorageKey} {wallets} autoConnect />
 <ConnectionProvider {network} {idl} />
 <div>
 	<slot />

@@ -1,8 +1,15 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import type { Wallet } from '@solana/wallet-adapter-wallets';
+	import { Buffer } from 'buffer';
+	import process from 'process';
 
-	export let localStorageKey: string, wallets: Wallet[];
+	globalThis.Buffer = Buffer;
+	globalThis.process = process;
+
+	export let localStorageKey: string,
+		wallets: Wallet[],
+		autoConnect = false;
 
 	let initWallet, destroyAdapter;
 
@@ -12,7 +19,7 @@
 		destroyAdapter = module.destroyAdapter;
 	});
 
-	$: initWallet && wallets && initWallet({ wallets, autoConnect: true, localStorageKey });
+	$: initWallet && wallets && initWallet({ wallets, autoConnect, localStorageKey });
 
 	onDestroy(() => destroyAdapter && destroyAdapter());
 </script>
