@@ -1,11 +1,11 @@
-[programs.localnet]
-solana_svelte_counter = "Ae2J3Cn2Vtrm4jc9dJiWtBZ16Pxd5xTtFNGAhKT2Djwm"
+[programs.devnet]
+solana_svelte_counter = "C7SGr2s3HdBuEveTahL9H3CsXQDwxkYEUSRPeJAVeDN5"
 
 [registry]
 url = "https://anchor.projectserum.com"
 
 [provider]
-cluster = "localnet"
+cluster = "devnet"
 wallet = "/Users/silvestrevivo/.config/solana/id.json"
 
 [scripts]
