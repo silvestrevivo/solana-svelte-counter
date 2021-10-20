@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Connection } from '@solana/web3.js';
-	import { useWorkspace } from '$utils/useWorkspace';
+	import { workSpace } from '$utils/workSpace';
 	import { Program, Provider, web3 } from '@project-serum/anchor';
 
 	export let idl, network: string;
 
-	let useWallet;
+	let walletStore;
 
 	onMount(async () => {
-		const module = await import('$utils/useWallet');
-		useWallet = module.useWallet;
+		const module = await import('$utils/walletStore');
+		walletStore = module.walletStore;
 	});
 
 	const { PublicKey } = web3;
@@ -19,9 +19,9 @@
 	const systemProgram = web3.SystemProgram;
 	const connection = new Connection(network, 'processed');
 
-	function defineProgramAndProvider(useWallet) {
+	function defineProgramAndProvider(walletStore) {
 		let { sendTransaction, signTransaction, signAllTransactions, signMessage, publicKey } =
-			useWallet;
+			walletStore;
 		const providerWallet = {
 			sendTransaction,
 			signTransaction,
@@ -33,8 +33,8 @@
 			preflightCommitment: 'processed'
 		});
 		const program = new Program(idl, programID, provider);
-		useWorkspace.set({ baseAccount, connection, provider, program, systemProgram });
+		workSpace.set({ baseAccount, connection, provider, program, systemProgram });
 	}
 
-	$: $useWallet && $useWallet.publicKey && defineProgramAndProvider($useWallet);
+	$: $walletStore && $walletStore.publicKey && defineProgramAndProvider($walletStore);
 </script>

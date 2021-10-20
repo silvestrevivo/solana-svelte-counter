@@ -1,40 +1,44 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { useWorkspace } from '$utils/useWorkspace';
+	import { workSpace } from '$utils/workSpace';
 
-	let useWallet, value;
+	let walletStore, value, walletConfigStore;
 
+	$: console.log('walletStore: ', $walletStore);
+	$: console.log('workSpace: ', $workSpace);
+	$: console.log('walletConfigStore: ', $walletConfigStore);
 	onMount(async () => {
-		const module = await import('$utils/useWallet');
-		useWallet = module.useWallet;
+		const module = await import('$utils/walletStore');
+		walletStore = module.walletStore;
+		walletConfigStore = module.walletConfigStore;
 	});
 
 	const selectWallet = (walletName) => {
-		$useWallet.select(walletName);
+		$walletStore.select(walletName);
 	};
 
-	function showAddress(useWalletStore) {
-		const base58 = useWalletStore.publicKey?.toBase58();
-		if (!useWalletStore.wallet || !base58) return null;
+	function showAddress(store) {
+		const base58 = store.publicKey?.toBase58();
+		if (!store.wallet || !base58) return null;
 		return base58.slice(0, 4) + '..' + base58.slice(-4);
 	}
 
-	$: address = useWallet && showAddress($useWallet);
+	$: address = walletStore && showAddress($walletStore);
 
 	async function createCounter() {
 		try {
 			/* interact with the program via rpc */
-			await $useWorkspace.program.rpc.create({
+			await $workSpace.program.rpc.create({
 				accounts: {
-					baseAccount: $useWorkspace.baseAccount.publicKey,
-					user: $useWorkspace.provider.wallet.publicKey,
-					systemProgram: $useWorkspace.systemProgram.programId
+					baseAccount: $workSpace.baseAccount.publicKey,
+					user: $workSpace.provider.wallet.publicKey,
+					systemProgram: $workSpace.systemProgram.programId
 				},
-				signers: [$useWorkspace.baseAccount]
+				signers: [$workSpace.baseAccount]
 			});
 
-			const account = await $useWorkspace.program.account.baseAccount.fetch(
-				$useWorkspace.baseAccount.publicKey
+			const account = await $workSpace.program.account.baseAccount.fetch(
+				$workSpace.baseAccount.publicKey
 			);
 			console.log('account: ', account);
 			value = account.count.toString();
@@ -44,14 +48,14 @@
 	}
 
 	async function increment() {
-		await $useWorkspace.program.rpc.increment({
+		await $workSpace.program.rpc.increment({
 			accounts: {
-				baseAccount: $useWorkspace.baseAccount.publicKey
+				baseAccount: $workSpace.baseAccount.publicKey
 			}
 		});
 
-		const account = await $useWorkspace.program.account.baseAccount.fetch(
-			$useWorkspace.baseAccount.publicKey
+		const account = await $workSpace.program.account.baseAccount.fetch(
+			$workSpace.baseAccount.publicKey
 		);
 		console.log('account: ', account);
 		value = account.count.toString();
@@ -66,8 +70,8 @@
 	</div>
 
 	<div class="wrapper-content">
-		{#if $useWallet?.connected}
-			<button on:click={() => $useWallet.disconnect('walletAdapter')}>disconnect wallet</button>
+		{#if $walletStore?.connected}
+			<button on:click={() => $walletStore.disconnect('walletAdapter')}>disconnect wallet</button>
 		{:else}
 			<button on:click={() => selectWallet('Phantom')}>select Phantom</button>
 		{/if}
