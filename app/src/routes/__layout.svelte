@@ -1,3 +1,11 @@
+<script context="module" lang="ts">
+	import { Buffer } from 'buffer';
+	import process from 'process';
+
+	globalThis.Buffer = Buffer;
+	globalThis.process = process;
+</script>
+
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { clusterApiUrl } from '@solana/web3.js';

@@ -1,17 +1,19 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { workSpace } from '$utils/workSpace';
+	import { walletStore, walletConfigStore } from '$utils/walletStore';
 
-	let walletStore, value, walletConfigStore;
+	// let walletStore, value, walletConfigStore;
+	let value;
 
 	$: console.log('walletStore: ', $walletStore);
 	$: console.log('workSpace: ', $workSpace);
 	$: console.log('walletConfigStore: ', $walletConfigStore);
-	onMount(async () => {
-		const module = await import('$utils/walletStore');
-		walletStore = module.walletStore;
-		walletConfigStore = module.walletConfigStore;
-	});
+	// onMount(async () => {
+	// 	const module = await import('$utils/walletStore');
+	// 	walletStore = module.walletStore;
+	// 	walletConfigStore = module.walletConfigStore;
+	// });
 
 	const selectWallet = (walletName) => {
 		$walletStore.select(walletName);
@@ -71,7 +73,7 @@
 
 	<div class="wrapper-content">
 		{#if $walletStore?.connected}
-			<button on:click={() => $walletStore.disconnect('walletAdapter')}>disconnect wallet</button>
+			<button on:click={() => $walletStore.disconnect()}>disconnect wallet</button>
 		{:else}
 			<button on:click={() => selectWallet('Phantom')}>select Phantom</button>
 		{/if}

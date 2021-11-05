@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type { Wallet } from '@solana/wallet-adapter-wallets';
-	import { Buffer } from 'buffer';
-	import process from 'process';
+	// import { Buffer } from 'buffer';
+	// import process from 'process';
 
-	globalThis.Buffer = Buffer;
-	globalThis.process = process;
+	// globalThis.Buffer = Buffer;
+	// globalThis.process = process;
 
 	export let localStorageKey: string,
 		wallets: Wallet[],
