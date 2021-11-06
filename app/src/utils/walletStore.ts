@@ -128,7 +128,7 @@ async function select(newName: WalletName | null): Promise<void> {
     if (walletName === newName) return;
 
     const { adapter } = get(walletAdapterStore);
-    if (adapter) await adapter.disconnect();
+    if (adapter) await disconnectAndDestroyWallet(adapter);
 
     walletNameStore.update((storeValues: WalletNameStore) => ({
         ...storeValues,
@@ -153,7 +153,7 @@ async function disconnect(): Promise<void> {
             ...storeValues,
             disconnecting: true,
         }));
-        await adapter.disconnect();
+        await disconnectAndDestroyWallet(adapter)
     } finally {
         walletNameStore.update((storeValues: WalletNameStore) => ({
             ...storeValues,
@@ -372,6 +372,7 @@ function destroyAdapter(): void {
     const { adapter } = get(walletAdapterStore);
     if (!adapter) return;
 
+    console.log('destroyAdapter: ===========');
     const { onError } = get(walletConfigStore);
 
     adapter.off('ready', onReady);
@@ -383,4 +384,9 @@ function destroyAdapter(): void {
 if (typeof window !== 'undefined') {
     // Ensure the adapter listeners are invalidated before refreshing the page.
     window.addEventListener('beforeunload', destroyAdapter);
+}
+
+async function disconnectAndDestroyWallet(adapter) {
+    destroyAdapter();
+    await adapter.disconnect();
 }
