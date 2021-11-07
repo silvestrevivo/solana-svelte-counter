@@ -12,8 +12,10 @@
 	let wallets;
 
 	onMount(async () => {
-		const { getPhantomWallet } = await import('@solana/wallet-adapter-wallets');
-		const walletsMap = [getPhantomWallet()];
+		const { getPhantomWallet, getSlopeWallet, getSolflareWallet } = await import(
+			'@solana/wallet-adapter-wallets'
+		);
+		const walletsMap = [getPhantomWallet(), getSlopeWallet(), getSolflareWallet()];
 		wallets = walletsMap;
 	});
 </script>

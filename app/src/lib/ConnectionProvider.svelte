@@ -1,17 +1,10 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { Connection } from '@solana/web3.js';
 	import { workSpace } from '$utils/workSpace';
 	import { Program, Provider, web3 } from '@project-serum/anchor';
+	import { walletStore } from '$utils/walletStore';
 
 	export let idl, network: string;
-
-	let walletStore;
-
-	onMount(async () => {
-		const module = await import('$utils/walletStore');
-		walletStore = module.walletStore;
-	});
 
 	const { PublicKey } = web3;
 	const programID = new PublicKey(idl.metadata.address);
