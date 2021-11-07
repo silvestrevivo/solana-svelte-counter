@@ -86,11 +86,11 @@ export const walletStore = writable<WalletStore>({
     signMessage: undefined,
 });
 
-const walletNameStore = writable<WalletNameStore>({
+export const walletNameStore = writable<WalletNameStore>({
     walletName: null,
 });
 
-const walletAdapterStore = writable<WalletAdapterStore>({
+export const walletAdapterStore = writable<WalletAdapterStore>({
     adapter: null,
 });
 
@@ -128,7 +128,7 @@ async function select(newName: WalletName | null): Promise<void> {
     if (walletName === newName) return;
 
     const { adapter } = get(walletAdapterStore);
-    if (adapter) await disconnectAndDestroyWallet(adapter);
+    if (adapter) await adapter.disconnect();
 
     walletNameStore.update((storeValues: WalletNameStore) => ({
         ...storeValues,
@@ -153,7 +153,7 @@ async function disconnect(): Promise<void> {
             ...storeValues,
             disconnecting: true,
         }));
-        await disconnectAndDestroyWallet(adapter)
+        await adapter.disconnect();
     } finally {
         walletNameStore.update((storeValues: WalletNameStore) => ({
             ...storeValues,
@@ -258,9 +258,7 @@ function onDisconnect() {
 
 walletNameStore.subscribe(({ walletName }: { walletName: WalletName | null }) => {
     const { localStorageKey } = get(walletConfigStore);
-    if (walletName) {
-		setLocalStorage(localStorageKey, walletName);
-	}
+    setLocalStorage(localStorageKey, walletName);
 
     const { walletsByName } = get(walletConfigStore);
     const wallet = walletsByName?.[walletName as WalletName] ?? null;
@@ -297,11 +295,9 @@ walletAdapterStore.subscribe(async ({ adapter }: { adapter: Adapter | null }) =>
     if (!adapter) return;
 
     const { autoConnect } = get(walletConfigStore);
-    console.log('autoConnect1: ', autoConnect);
     if (!autoConnect) return;
-    console.log('autoConnect2: ', autoConnect);
+
     const { ready, connected, connecting } = get(walletStore);
-    console.log(`!ready || connected || connecting`, !ready || connected || connecting)
     if (!ready || connected || connecting) return;
 
     try {
@@ -368,25 +364,16 @@ walletAdapterStore.subscribe(({ adapter }: { adapter: Adapter | null }) => {
     }));
 });
 
-function destroyAdapter(): void {
+// @FIXME: this needs to be handled by the core library here, not components
+// This has to be used Svelte component inside onDestroy method
+export function destroyAdapter() {
     const { adapter } = get(walletAdapterStore);
     if (!adapter) return;
 
-    console.log('destroyAdapter: ===========');
     const { onError } = get(walletConfigStore);
 
     adapter.off('ready', onReady);
     adapter.off('connect', onConnect);
     adapter.off('disconnect', onDisconnect);
     adapter.off('error', onError);
-}
-
-if (typeof window !== 'undefined') {
-    // Ensure the adapter listeners are invalidated before refreshing the page.
-    window.addEventListener('beforeunload', destroyAdapter);
-}
-
-async function disconnectAndDestroyWallet(adapter) {
-    destroyAdapter();
-    await adapter.disconnect();
 }

@@ -4,10 +4,6 @@
 
 	let value;
 
-	$: console.log('walletStore: ', $walletStore);
-	$: console.log('workSpace: ', $workSpace);
-	$: console.log('walletConfigStore: ', $walletConfigStore);
-
 	const selectWallet = (walletName) => {
 		$walletStore.select(walletName);
 	};

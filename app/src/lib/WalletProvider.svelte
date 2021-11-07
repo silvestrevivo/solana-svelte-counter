@@ -7,7 +7,6 @@
 </script>
 
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import type { Wallet } from '@solana/wallet-adapter-wallets';
 	import { initialize } from '$utils/walletStore';
 
@@ -15,7 +14,7 @@
 		wallets: Wallet[],
 		autoConnect = false;
 
-	$: initialize && wallets && initialize({ wallets, autoConnect, localStorageKey });
+	initialize({ wallets, autoConnect, localStorageKey });
 </script>
 
 <svelte:head>

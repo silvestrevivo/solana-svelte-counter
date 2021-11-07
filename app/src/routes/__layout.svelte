@@ -20,7 +20,7 @@
 	});
 </script>
 
-<WalletProvider {localStorageKey} {wallets} autoConnect />
+<WalletProvider {localStorageKey} {wallets} />
 <ConnectionProvider {network} {idl} />
 <div>
 	<slot />
