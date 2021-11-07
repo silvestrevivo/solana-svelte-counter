@@ -258,7 +258,9 @@ function onDisconnect() {
 
 walletNameStore.subscribe(({ walletName }: { walletName: WalletName | null }) => {
     const { localStorageKey } = get(walletConfigStore);
-    setLocalStorage(localStorageKey, walletName);
+    if (walletName){
+        setLocalStorage(localStorageKey, walletName);
+    }
 
     const { walletsByName } = get(walletConfigStore);
     const wallet = walletsByName?.[walletName as WalletName] ?? null;
@@ -292,15 +294,11 @@ walletAdapterStore.subscribe(({ adapter }: { adapter: Adapter | null }) => {
 
 // watcher for auto-connect
 walletAdapterStore.subscribe(async ({ adapter }: { adapter: Adapter | null }) => {
-    if (!adapter) return;
-
     const { autoConnect } = get(walletConfigStore);
-    console.log('autoConnect1: ', autoConnect);
-    if (!autoConnect) return;
-    console.log('autoConnect2: ', autoConnect);
     const { ready, connected, connecting } = get(walletStore);
-    console.log(`!ready || connected || connecting`, !ready || connected || connecting)
-    if (!ready || connected || connecting) return;
+
+
+    if (!adapter || !autoConnect || !ready || connected || connecting) return;
 
     try {
         walletStore.update((storeValues: WalletStore) => ({
@@ -376,9 +374,4 @@ function destroyAdapter(): void {
     adapter.off('connect', onConnect);
     adapter.off('disconnect', onDisconnect);
     adapter.off('error', onError);
-}
-
-if (typeof window !== 'undefined') {
-    // Ensure the adapter listeners are invalidated before refreshing the page.
-    window.addEventListener('beforeunload', destroyAdapter);
 }
