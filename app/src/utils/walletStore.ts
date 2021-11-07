@@ -375,3 +375,8 @@ function destroyAdapter(): void {
     adapter.off('disconnect', onDisconnect);
     adapter.off('error', onError);
 }
+
+if (typeof window !== 'undefined') {
+    // Ensure the adapter listeners are invalidated before refreshing the page.
+    window.addEventListener('beforeunload', destroyAdapter);
+}
