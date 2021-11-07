@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { workSpace } from '$utils/workSpace';
-	import { walletStore, walletConfigStore } from '$utils/walletStore';
+	import { walletStore } from '$utils/walletStore';
 
 	let value;
 
