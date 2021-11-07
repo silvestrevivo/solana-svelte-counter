@@ -295,9 +295,11 @@ walletAdapterStore.subscribe(async ({ adapter }: { adapter: Adapter | null }) =>
     if (!adapter) return;
 
     const { autoConnect } = get(walletConfigStore);
+    console.log('autoConnect1: ', autoConnect);
     if (!autoConnect) return;
-
+    console.log('autoConnect2: ', autoConnect);
     const { ready, connected, connecting } = get(walletStore);
+    console.log(`!ready || connected || connecting`, !ready || connected || connecting)
     if (!ready || connected || connecting) return;
 
     try {
@@ -364,9 +366,7 @@ walletAdapterStore.subscribe(({ adapter }: { adapter: Adapter | null }) => {
     }));
 });
 
-// @FIXME: this needs to be handled by the core library here, not components
-// This has to be used Svelte component inside onDestroy method
-export function destroyAdapter() {
+function destroyAdapter(): void {
     const { adapter } = get(walletAdapterStore);
     if (!adapter) return;
 
@@ -376,4 +376,9 @@ export function destroyAdapter() {
     adapter.off('connect', onConnect);
     adapter.off('disconnect', onDisconnect);
     adapter.off('error', onError);
+}
+
+if (typeof window !== 'undefined') {
+    // Ensure the adapter listeners are invalidated before refreshing the page.
+    window.addEventListener('beforeunload', destroyAdapter);
 }
