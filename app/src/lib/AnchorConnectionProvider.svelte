@@ -1,16 +1,8 @@
 <script lang="ts">
-	import { setContext } from 'svelte';
 	import { Connection } from '@solana/web3.js';
 	import { workSpace } from '$utils/workSpace';
 	import { Program, Provider, web3 } from '@project-serum/anchor';
-	// import type { Idl } from '@project-serum/anchor';
 	import { walletStore } from '$utils/walletStore';
-
-	// interface IDL extends Idl {
-	// 	metadata: {
-	// 		address: string;
-	// 	};
-	// }
 
 	export let idl, network: string;
 
