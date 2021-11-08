@@ -1,5 +1,5 @@
 <script lang="ts">
-	import WalletMultiButton from "$lib/WalletMultiButton.svelte";
+	import WalletMultiButton from '$lib/WalletMultiButton.svelte';
 	import { walletStore } from '$utils/walletStore';
 	import { workSpace } from '$utils/workSpace';
 
@@ -52,13 +52,13 @@
 	<div class="wrapper-content">
 		{#if $walletStore?.connected}
 			<button on:click={() => $walletStore.disconnect()}>disconnect wallet</button>
-      {:else}
-        Select wallet ...
+		{:else}
+			Select wallet ...
 		{/if}
 	</div>
 
 	<div class="address">
-	  <WalletMultiButton />
+		<WalletMultiButton />
 	</div>
 
 	<div class="wrapper-content">
