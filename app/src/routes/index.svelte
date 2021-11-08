@@ -1,20 +1,9 @@
 <script lang="ts">
-	import { workSpace } from '$utils/workSpace';
+	import WalletMultiButton from "$lib/WalletMultiButton.svelte";
 	import { walletStore } from '$utils/walletStore';
+	import { workSpace } from '$utils/workSpace';
 
 	let value;
-
-	const selectWallet = (walletName) => {
-		$walletStore.select(walletName);
-	};
-
-	function showAddress(store) {
-		const base58 = store.publicKey?.toBase58();
-		if (!store.wallet || !base58) return null;
-		return base58.slice(0, 4) + '..' + base58.slice(-4);
-	}
-
-	$: address = walletStore && showAddress($walletStore);
 
 	async function createCounter() {
 		try {
@@ -63,16 +52,13 @@
 	<div class="wrapper-content">
 		{#if $walletStore?.connected}
 			<button on:click={() => $walletStore.disconnect()}>disconnect wallet</button>
-		{:else}
-			<button on:click={() => selectWallet('Phantom')}>select Phantom</button>
+      {:else}
+        Select wallet ...
 		{/if}
 	</div>
 
 	<div class="address">
-		<p>My wallet address!!</p>
-		{#if address}
-			<p>{address}</p>
-		{/if}
+	  <WalletMultiButton />
 	</div>
 
 	<div class="wrapper-content">
