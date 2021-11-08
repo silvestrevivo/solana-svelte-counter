@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { walletStore } from '$utils/walletStore';
+	import { walletStore, WalletStore } from '$utils/walletStore';
+	import { WalletName } from '@solana/wallet-adapter-wallets';
 
-	function showAddress(store) {
+	function showAddress(store: WalletStore) {
 		const base58 = store.publicKey?.toBase58();
 		if (!store.wallet || !base58) return null;
 		return base58.slice(0, 4) + '..' + base58.slice(-4);
@@ -15,10 +16,10 @@
 		}
 
 		// TODO: show wallet selection modal
-		selectWallet('Phantom');
+		selectWallet(WalletName.Phantom);
 	}
 
-	const selectWallet = (walletName) => {
+	const selectWallet = (walletName: WalletName) => {
 		$walletStore.select(walletName);
 	};
 
