@@ -2,7 +2,8 @@
 	import { onMount } from 'svelte';
 	import { clusterApiUrl } from '@solana/web3.js';
 	import WalletProvider from '$lib/WalletProvider.svelte';
-	import ConnectionProvider from '$lib/ConnectionProvider.svelte';
+	// import ConnectionProvider from '$lib/ConnectionProvider.svelte';
+	import AnchorConnectionProvider from '$lib/AnchorConnectionProvider.svelte';
 	import idl from '../../../target/idl/solana_svelte_counter.json';
 
 	const localStorageKey = 'walletAdapter';
@@ -20,8 +21,9 @@
 	});
 </script>
 
-<WalletProvider {localStorageKey} {wallets} autoConnect />
-<ConnectionProvider {network} {idl} />
+<WalletProvider {localStorageKey} {wallets} />
+<!-- <ConnectionProvider {network} {idl} /> -->
+<AnchorConnectionProvider {network} {idl} />
 <div>
 	<slot />
 </div>

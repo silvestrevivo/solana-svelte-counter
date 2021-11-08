@@ -7,7 +7,6 @@
 </script>
 
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import type { Wallet } from '@solana/wallet-adapter-wallets';
 	import { initialize } from '$utils/walletStore';
 
