@@ -1,9 +1,10 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { clusterApiUrl } from '@solana/web3.js';
-	import WalletProvider from '$lib/WalletProvider.svelte';
 	import ConnectionProvider from '$lib/ConnectionProvider.svelte';
+	import WalletProvider from '$lib/WalletProvider.svelte';
+	import { clusterApiUrl } from '@solana/web3.js';
+	import { onMount } from 'svelte';
 	import idl from '../../../target/idl/solana_svelte_counter.json';
+	import '../styles.css';
 
 	const localStorageKey = 'walletAdapter';
 	// const network = 'http://127.0.0.1:8899';
