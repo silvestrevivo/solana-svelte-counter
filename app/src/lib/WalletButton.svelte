@@ -1,6 +1,30 @@
 <script lang="ts">
-	import { walletStore, WalletStore } from '$utils/walletStore';
+	import { WalletStore, walletStore } from '$utils/walletStore';
 	import { WalletName } from '@solana/wallet-adapter-wallets';
+
+	let active = false;
+	let copied = false;
+
+	function openDropdown() {
+		active = true;
+	}
+
+	function disconnect() {
+		$walletStore.disconnect();
+	}
+
+	function openModal() {
+		alert('TODO');
+	}
+
+	async function copyAddress() {
+		const base58 = $walletStore.publicKey?.toBase58();
+
+		if (!base58) return;
+		await navigator.clipboard.writeText(base58);
+		copied = true;
+		setTimeout(() => (copied = false), 400);
+	}
 
 	function showAddress(store: WalletStore) {
 		const base58 = store.publicKey?.toBase58();
@@ -10,8 +34,7 @@
 
 	function onButtonClick() {
 		if ($walletStore.connected) {
-			// show list modal
-
+			openDropdown();
 			return;
 		}
 
@@ -19,26 +42,45 @@
 		selectWallet(WalletName.Phantom);
 	}
 
-	const selectWallet = (walletName: WalletName) => {
+	function selectWallet(walletName: WalletName) {
 		$walletStore.select(walletName);
-	};
+	}
 
 	$: address = showAddress($walletStore);
 </script>
 
-<button
-	class="wallet-adapter-button"
-	class:justify-between={$walletStore.connected}
-	on:click={() => onButtonClick()}
->
-	{#if $walletStore.connected}
-		{address}
+<div class="wallet-adapter-dropdown">
+	<button
+		class="wallet-adapter-button"
+		class:justify-between={$walletStore.connected}
+		on:click={() => onButtonClick()}
+	>
+		{#if $walletStore.connected}
+			{address}
 
-		<img src={$walletStore.wallet.icon} alt={$walletStore.wallet.name + ' icon'} />
-	{:else}
-		Select wallet
-	{/if}
-</button>
+			<img src={$walletStore.wallet.icon} alt={$walletStore.wallet.name + ' icon'} />
+		{:else}
+			Select wallet
+		{/if}
+	</button>
+
+	<ul
+		aria-label="dropdown-list"
+		class="wallet-adapter-dropdown-list"
+		class:wallet-adapter-dropdown-list-active={active}
+		role="menu"
+	>
+		<li on:click={() => copyAddress()} class="wallet-adapter-dropdown-list-item" role="menuitem">
+			{copied ? 'Copied' : 'Copy address'}
+		</li>
+		<li on:click={() => openModal()} class="wallet-adapter-dropdown-list-item" role="menuitem">
+			Connect a different wallet
+		</li>
+		<li on:click={() => disconnect()} class="wallet-adapter-dropdown-list-item" role="menuitem">
+			Disconnect
+		</li>
+	</ul>
+</div>
 
 <style>
 	.justify-between {
