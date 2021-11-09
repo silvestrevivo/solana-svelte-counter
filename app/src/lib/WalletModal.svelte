@@ -30,14 +30,14 @@
 		}
 	}
 
-	function handleKeydown(e) {
+	function handleKeyup(e) {
 		if (e.key == 'Escape') {
 			dispatch('close');
 		}
 	}
 </script>
 
-<svelte:window on:keydown={(e) => handleKeydown(e)} />
+<svelte:window on:keyup={handleKeyup} />
 
 <div
 	aria-labelledby="wallet-adapter-modal-title"

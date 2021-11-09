@@ -128,7 +128,7 @@ async function select(newName: WalletName | null): Promise<void> {
     if (walletName === newName) return;
 
     const { adapter } = get(walletAdapterStore);
-    if (adapter) await adapter.disconnect();
+    if (adapter) await disconnect();
 
     walletNameStore.update((storeValues: WalletNameStore) => ({
         ...storeValues,
@@ -153,6 +153,7 @@ async function disconnect(): Promise<void> {
             ...storeValues,
             disconnecting: true,
         }));
+        await destroyAdapter();
         await adapter.disconnect();
     } finally {
         walletNameStore.update((storeValues: WalletNameStore) => ({
