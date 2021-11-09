@@ -288,6 +288,7 @@ walletAdapterStore.subscribe(({ adapter }: { adapter: Adapter | null }) => {
     const { onError } = get(walletConfigStore);
     console.log(`walletAdapterStore!!!!!!!`);
 
+    adapter.on('ready', onReady);
     adapter.on('connect', onConnect);
     adapter.on('disconnect', onDisconnect);
     adapter.on('error', onError);
