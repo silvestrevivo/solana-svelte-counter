@@ -31,7 +31,7 @@
 
 			<ul class="wallet-adapter-modal-list">
 				{#each $walletConfigStore.wallets as { name, icon }}
-					<li class="r">
+					<li>
 						<WalletButton on:click={() => connect(name)}>
 							{name}
 
