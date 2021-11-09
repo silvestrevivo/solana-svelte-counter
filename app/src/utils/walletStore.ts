@@ -28,7 +28,7 @@ interface WalletConfigStore {
     onError: ErrorHandler;
 }
 
-interface WalletStore {
+export interface WalletStore {
     wallet: Wallet | null;
     publicKey: PublicKey | null;
     ready: boolean;
