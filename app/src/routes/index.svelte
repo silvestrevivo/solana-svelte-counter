@@ -80,7 +80,6 @@
 		position: absolute;
 		right: 30px;
 		top: 30px;
-		border: 1px solid blueviolet;
 		border-radius: 5px;
 		padding: 10px;
 	}
