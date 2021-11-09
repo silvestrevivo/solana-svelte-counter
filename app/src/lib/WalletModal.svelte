@@ -6,7 +6,9 @@
 
 	export let maxNumberOfWallets = 3;
 
-	let showMoreOptions = false;
+	let showMoreOptions = false,
+		backdrop: HTMLDivElement,
+		container: HTMLDivElement;
 
 	$: numberOfWalletsShown = showMoreOptions
 		? $walletConfigStore.wallets.length
@@ -21,15 +23,31 @@
 	function toggleMoreOptions() {
 		showMoreOptions = !showMoreOptions;
 	}
+
+	function closeModal(e) {
+		if (e.target === backdrop || e.target === container) {
+			dispatch('close');
+		}
+	}
+
+	function handleKeydown(e) {
+		if (e.key == 'Escape') {
+			dispatch('close');
+		}
+	}
 </script>
+
+<svelte:window on:keydown={(e) => handleKeydown(e)} />
 
 <div
 	aria-labelledby="wallet-adapter-modal-title"
 	aria-modal="true"
 	class="wallet-adapter-modal wallet-adapter-modal-fade-in"
 	role="dialog"
+	bind:this={backdrop}
+	on:click={(e) => closeModal(e)}
 >
-	<div class="wallet-adapter-modal-container">
+	<div class="wallet-adapter-modal-container" bind:this={container}>
 		<div class="wallet-adapter-modal-wrapper">
 			<h1 class="wallet-adapter-modal-title">Connect Wallet</h1>
 

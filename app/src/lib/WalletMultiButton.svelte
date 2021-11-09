@@ -10,7 +10,6 @@
 
 	let dropDrownVisible = false,
 		modalVisible = false,
-		active = false,
 		copied = false;
 
 	$: base58 = publicKey && publicKey?.toBase58();
@@ -42,6 +41,34 @@
 		await select(event.detail);
 		await connect();
 	}
+
+	interface CallbackType {
+		(arg?: string): void;
+	}
+
+	function clickOutside(node: HTMLElement, callbackFunction: CallbackType): unknown {
+		function onClick(event: MouseEvent) {
+			if (
+				node &&
+				event.target instanceof Node &&
+				!node.contains(event.target) &&
+				!event.defaultPrevented
+			) {
+				callbackFunction();
+			}
+		}
+
+		document.body.addEventListener('click', onClick, true);
+
+		return {
+			update(newCallbackFunction: CallbackType) {
+				callbackFunction = newCallbackFunction;
+			},
+			destroy() {
+				document.body.removeEventListener('click', onClick, true);
+			}
+		};
+	}
 </script>
 
 {#if !wallet}
@@ -61,6 +88,12 @@
 				aria-label="dropdown-list"
 				class="wallet-adapter-dropdown-list wallet-adapter-dropdown-list-active"
 				role="menu"
+				use:clickOutside={() => {
+					console.log(`clickOutsiede`, dropDrownVisible);
+					if (dropDrownVisible) {
+						closeDropdown();
+					}
+				}}
 			>
 				<li on:click={copyAddress} class="wallet-adapter-dropdown-list-item" role="menuitem">
 					{copied ? 'Copied' : 'Copy address'}
