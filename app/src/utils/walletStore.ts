@@ -128,7 +128,7 @@ async function select(newName: WalletName | null): Promise<void> {
     if (walletName === newName) return;
 
     const { adapter } = get(walletAdapterStore);
-    if (adapter) await adapter.disconnect();
+    if (adapter) await disconnect();
 
     walletNameStore.update((storeValues: WalletNameStore) => ({
         ...storeValues,
@@ -153,6 +153,7 @@ async function disconnect(): Promise<void> {
             ...storeValues,
             disconnecting: true,
         }));
+        await destroyAdapter();
         await adapter.disconnect();
     } finally {
         walletNameStore.update((storeValues: WalletNameStore) => ({
@@ -285,6 +286,7 @@ walletAdapterStore.subscribe(({ adapter }: { adapter: Adapter | null }) => {
     if (!adapter) return;
 
     const { onError } = get(walletConfigStore);
+    console.log(`walletAdapterStore!!!!!!!`);
 
     adapter.on('ready', onReady);
     adapter.on('connect', onConnect);
@@ -365,6 +367,7 @@ walletAdapterStore.subscribe(({ adapter }: { adapter: Adapter | null }) => {
 });
 
 function destroyAdapter(): void {
+    console.log(`destroyAdapter ==========`)
     const { adapter } = get(walletAdapterStore);
     if (!adapter) return;
 
