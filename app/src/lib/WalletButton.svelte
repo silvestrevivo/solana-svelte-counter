@@ -1,6 +1,17 @@
+<script lang="ts">
+	export let disabled: boolean = false;
+
+	let className: string = '';
+	export { className as class };
+
+	let justifyContent: string =
+		$$slots['end-icon'] || $$slots['start-icon'] ? 'space-between' : 'center';
+</script>
+
 <button
-	class="wallet-adapter-button"
-	class:justify-between={$$slots['start-icon'] || $$slots['end-icon']}
+	class="wallet-adapter-button {className}"
+	style={`justify-content: ${justifyContent};`}
+	{disabled}
 	on:click
 >
 	{#if $$slots['start-icon']}
@@ -15,9 +26,3 @@
 		</i>
 	{/if}
 </button>
-
-<style>
-	.justify-between {
-		justify-content: space-between;
-	}
-</style>
