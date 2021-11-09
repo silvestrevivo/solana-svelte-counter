@@ -6,7 +6,9 @@
 
 	export let maxNumberOfWallets = 3;
 
-	let showMoreOptions = false;
+	let showMoreOptions = false,
+		backdrop: HTMLDivElement,
+		container: HTMLDivElement;
 
 	$: numberOfWalletsShown = showMoreOptions
 		? $walletConfigStore.wallets.length
@@ -22,8 +24,14 @@
 		showMoreOptions = !showMoreOptions;
 	}
 
-	function handleKeyup({ key }) {
-		if (key === 'Escape') {
+	function closeModal(e) {
+		if (e.target === backdrop || e.target === container) {
+			dispatch('close');
+		}
+	}
+
+	function handleKeyup(e) {
+		if (e.key == 'Escape') {
 			dispatch('close');
 		}
 	}
@@ -36,8 +44,10 @@
 	aria-modal="true"
 	class="wallet-adapter-modal wallet-adapter-modal-fade-in"
 	role="dialog"
+	bind:this={backdrop}
+	on:click={(e) => closeModal(e)}
 >
-	<div class="wallet-adapter-modal-container">
+	<div class="wallet-adapter-modal-container" bind:this={container}>
 		<div class="wallet-adapter-modal-wrapper">
 			<h1 class="wallet-adapter-modal-title">Connect Wallet</h1>
 

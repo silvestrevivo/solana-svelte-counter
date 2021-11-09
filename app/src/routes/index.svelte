@@ -43,18 +43,13 @@
 	$: console.log('value: ', value);
 </script>
 
-<div>
+<div class="wrapper-app">
 	<div class="title">
 		<h1>Solana Svelte Counter</h1>
-		<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
-	</div>
-
-	<div class="wrapper-content">
-		{#if $walletStore?.connected}
-			<button on:click={() => $walletStore.disconnect()}>disconnect wallet</button>
-		{:else}
-			Select wallet ...
-		{/if}
+		<p>
+			Demo for <a href="https://github.com/solana-labs/wallet-adapter">solana-labs/wallet-adapter</a
+			>, for adapter implementation in Svelte
+		</p>
 	</div>
 
 	<div class="address">
@@ -63,15 +58,29 @@
 
 	<div class="wrapper-content">
 		{#if value}
-			<button on:click={increment}>increment</button>
-			<p>Value: {value}</p>
+			<button on:click={increment}>Increment</button>
+			<p class="value">Value: {value}</p>
 		{:else}
-			<button on:click={createCounter}>createCounter</button>
+			<button on:click={createCounter}>Create counter</button>
 		{/if}
 	</div>
+
+	{#if $walletStore?.connected}
+		<p class="warning">You are connected to DevNet!</p>
+	{:else}
+		<p class="warning">You are not connected...</p>
+	{/if}
 </div>
 
 <style>
+	:global(body) {
+		padding: 0;
+		margin: 0;
+	}
+	.wrapper-app {
+		height: 100vh;
+		font-family: 'Inter', 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	}
 	.title {
 		text-align: center;
 	}
@@ -85,12 +94,29 @@
 	}
 
 	.wrapper-content {
-		border: 1px solid blueviolet;
+		border: 2px solid rgb(226, 153, 43);
 		border-radius: 5px;
-		padding: 10px;
+		padding: 50px;
 		width: 400px;
 		margin: 0 auto;
 		text-align: center;
 		margin-bottom: 30px;
+	}
+
+	button {
+		border: 1px solid grey;
+		padding: 10px;
+		border-radius: 5px;
+		font-size: 16px;
+		cursor: pointer;
+	}
+
+	.value {
+		font-size: 30px;
+	}
+
+	.warning {
+		color: grey;
+		text-align: center;
 	}
 </style>

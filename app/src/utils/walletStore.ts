@@ -286,7 +286,6 @@ walletAdapterStore.subscribe(({ adapter }: { adapter: Adapter | null }) => {
     if (!adapter) return;
 
     const { onError } = get(walletConfigStore);
-    console.log(`walletAdapterStore!!!!!!!`);
 
     adapter.on('ready', onReady);
     adapter.on('connect', onConnect);
@@ -367,7 +366,6 @@ walletAdapterStore.subscribe(({ adapter }: { adapter: Adapter | null }) => {
 });
 
 function destroyAdapter(): void {
-    console.log(`destroyAdapter ==========`)
     const { adapter } = get(walletAdapterStore);
     if (!adapter) return;
 
