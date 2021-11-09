@@ -2,8 +2,10 @@
 	import { Connection } from '@solana/web3.js';
 	import type { Commitment, ConnectionConfig } from '@solana/web3.js';
 	import { workSpace } from '$utils/workSpace';
-	import { Program, Provider, web3 } from '@project-serum/anchor';
+	import * as pkg from '@project-serum/anchor';
 	import { walletStore } from '$utils/walletStore';
+
+	const { web3, Provider, Program } = pkg;
 
 	export let idl,
 		network: string,
