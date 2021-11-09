@@ -5,6 +5,7 @@
 	// import ConnectionProvider from '$lib/ConnectionProvider.svelte';
 	import AnchorConnectionProvider from '$lib/AnchorConnectionProvider.svelte';
 	import idl from '../../../target/idl/solana_svelte_counter.json';
+	import '../styles/styles.css';
 
 	const localStorageKey = 'walletAdapter';
 	// const network = 'http://127.0.0.1:8899';
