@@ -1,9 +1,7 @@
 <script lang="ts">
 	import { walletStore } from '$utils/walletStore';
-	import WalletConnectButton from './WalletConnectButton.svelte';
-	import WalletModalButton from './WalletModalButton.svelte';
 	import WalletButton from './WalletButton.svelte';
-	import WalletIcon from './WalletIcon.svelte';
+	import WalletConnectButton from './WalletConnectButton.svelte';
 	import WalletModal from './WalletModal.svelte';
 
 	$: ({ publicKey, wallet, disconnect, connect, select } = $walletStore);
@@ -72,14 +70,16 @@
 </script>
 
 {#if !wallet}
-	<WalletModalButton on:click={openModal} />
+	<WalletButton class="wallet-adapter-button-trigger" on:click={openModal}>
+		Select Wallet
+	</WalletButton>
 {:else if !base58}
 	<WalletConnectButton />
 {:else}
 	<div class="wallet-adapter-dropdown">
 		<WalletButton on:click={openDropdown} class="wallet-adapter-button-trigger">
 			<svelte:fragment slot="start-icon">
-				<WalletIcon {wallet} />
+				<img src={wallet.icon} alt={`${wallet.name} icon`} />
 			</svelte:fragment>
 			{content}
 		</WalletButton>
