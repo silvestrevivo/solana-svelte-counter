@@ -3,17 +3,17 @@
 	import WalletButton from './WalletButton.svelte';
 	import WalletIcon from './WalletIcon.svelte';
 
-	const { wallet, connect, connecting, connected } = $walletStore;
-
 	export let disabled: boolean = false;
 
 	let content;
 
+	$: ({ wallet, connect, connecting, connected } = $walletStore);
+  
 	$: {
+		content = 'Connect Wallet';
+		if (wallet) content = 'Connect';
 		if (connecting) content = 'Connecting ...';
 		if (connected) content = 'Connected';
-		if (wallet) content = 'Connect';
-		content = 'Connect Wallet';
 	}
 
 	function handleClick(e: MouseEvent) {

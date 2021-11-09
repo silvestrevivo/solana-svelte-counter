@@ -4,10 +4,22 @@
 	import WalletButton from './WalletButton.svelte';
 	import WalletIcon from './WalletIcon.svelte';
 
+	export let maxNumberOfWallets = 3;
+
+	let showMoreOptions = false;
+
+	$: numberOfWalletsShown = showMoreOptions
+		? $walletConfigStore.wallets.length
+		: maxNumberOfWallets;
+
 	const dispatch = createEventDispatcher();
 
 	function connect(name) {
 		dispatch('connect', name);
+	}
+
+	function toggleMoreOptions() {
+		showMoreOptions = !showMoreOptions;
 	}
 </script>
 
@@ -30,7 +42,7 @@
 			</button>
 
 			<ul class="wallet-adapter-modal-list">
-				{#each $walletConfigStore.wallets as { name, icon }}
+				{#each $walletConfigStore.wallets.slice(0, numberOfWalletsShown) as { name, icon }}
 					<li>
 						<WalletButton on:click={() => connect(name)}>
 							{name}
@@ -42,6 +54,23 @@
 					</li>
 				{/each}
 			</ul>
+
+			{#if $walletConfigStore.wallets.length > maxNumberOfWallets}
+				<button
+					class="wallet-adapter-modal-collapse-button wallet-adapter-button"
+					style="justify-content: space-between"
+					class:wallet-adapter-modal-collapse-button-active={showMoreOptions}
+					on:click={() => toggleMoreOptions()}
+				>
+					{showMoreOptions ? 'Less' : 'More'} options
+
+					<svg width="11" height="6" xmlns="http://www.w3.org/2000/svg">
+						<path
+							d="m5.938 5.73 4.28-4.126a.915.915 0 0 0 0-1.322 1 1 0 0 0-1.371 0L5.253 3.736 1.659.272a1 1 0 0 0-1.371 0A.93.93 0 0 0 0 .932c0 .246.1.48.288.662l4.28 4.125a.99.99 0 0 0 1.37.01z"
+						/>
+					</svg>
+				</button>
+			{/if}
 		</div>
 	</div>
 </div>
