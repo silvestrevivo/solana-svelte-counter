@@ -7,15 +7,16 @@
 </script>
 
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import type { Wallet } from '@solana/wallet-adapter-wallets';
 	import { initialize } from '$utils/walletStore';
+	import type { WalletError } from '@solana/wallet-adapter-base';
 
 	export let localStorageKey: string,
 		wallets: Wallet[],
-		autoConnect = false;
+		autoConnect = false,
+		onError = (error: WalletError) => console.error(error);
 
-	$: wallets && initialize({ wallets, autoConnect, localStorageKey });
+	$: wallets && initialize({ wallets, autoConnect, localStorageKey, onError });
 </script>
 
 <svelte:head>
