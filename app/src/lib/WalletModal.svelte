@@ -2,7 +2,6 @@
 	import { walletConfigStore } from '$utils/walletStore';
 	import { createEventDispatcher } from 'svelte';
 	import WalletButton from './WalletButton.svelte';
-	import WalletIcon from './WalletIcon.svelte';
 
 	export let maxNumberOfWallets = 3;
 
@@ -66,7 +65,7 @@
 							{name}
 
 							<svelte:fragment slot="end-icon">
-								<WalletIcon wallet={{ name, icon }} />
+								<img src={icon} alt={`${name} icon`} />
 							</svelte:fragment>
 						</WalletButton>
 					</li>

@@ -1,14 +1,13 @@
 <script lang="ts">
 	import { walletStore } from '$utils/walletStore';
 	import WalletButton from './WalletButton.svelte';
-	import WalletIcon from './WalletIcon.svelte';
 
 	export let disabled: boolean = false;
 
 	let content;
 
 	$: ({ wallet, connect, connecting, connected } = $walletStore);
-  
+
 	$: {
 		content = 'Connect Wallet';
 		if (wallet) content = 'Connect';
@@ -28,7 +27,7 @@
 >
 	<svelte:fragment slot="start-icon">
 		{#if wallet}
-			<WalletIcon {wallet} />
+			<img src={wallet.icon} alt={`${wallet.name} icon`} />
 		{/if}
 	</svelte:fragment>
 	{content}
