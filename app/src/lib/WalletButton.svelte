@@ -5,16 +5,18 @@
 	let active = false;
 	let copied = false;
 
-	function openDropdown() {
-		active = true;
+	function toggleDropdown() {
+		active = !active;
 	}
 
 	function disconnect() {
 		$walletStore.disconnect();
+		toggleDropdown();
 	}
 
 	function openModal() {
 		alert('TODO');
+		toggleDropdown();
 	}
 
 	async function copyAddress() {
@@ -34,7 +36,7 @@
 
 	function onButtonClick() {
 		if ($walletStore.connected) {
-			openDropdown();
+			toggleDropdown();
 			return;
 		}
 
@@ -47,6 +49,7 @@
 	}
 
 	$: address = showAddress($walletStore);
+	$: copied && toggleDropdown();
 </script>
 
 <div class="wallet-adapter-dropdown">
