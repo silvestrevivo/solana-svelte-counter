@@ -4,7 +4,7 @@
 	import { clusterApiUrl } from '@solana/web3.js';
 	import { onMount } from 'svelte';
 	import idl from '../../../target/idl/solana_svelte_counter.json';
-	import '../styles.css';
+	import '../styles/styles.css';
 
 	const localStorageKey = 'walletAdapter';
 	// const network = 'http://127.0.0.1:8899';

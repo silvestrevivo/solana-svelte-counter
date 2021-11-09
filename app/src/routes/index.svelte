@@ -1,5 +1,5 @@
 <script lang="ts">
-	import WalletButton from '$lib/WalletButton.svelte';
+	import WalletMultiButton from '$lib/WalletMultiButton.svelte';
 	import { walletStore } from '$utils/walletStore';
 	import { workSpace } from '$utils/workSpace';
 
@@ -58,7 +58,7 @@
 	</div>
 
 	<div class="address">
-		<WalletButton />
+		<WalletMultiButton />
 	</div>
 
 	<div class="wrapper-content">
