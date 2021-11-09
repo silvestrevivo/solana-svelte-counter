@@ -55,7 +55,7 @@
 				{/each}
 			</ul>
 
-			{#if maxNumberOfWallets > $walletConfigStore.wallets.length}
+			{#if $walletConfigStore.wallets.length > maxNumberOfWallets}
 				<button
 					class="wallet-adapter-modal-collapse-button wallet-adapter-button"
 					style="justify-content: space-between"
