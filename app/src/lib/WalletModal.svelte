@@ -21,7 +21,15 @@
 	function toggleMoreOptions() {
 		showMoreOptions = !showMoreOptions;
 	}
+
+	function handleKeyup({ key }) {
+		if (key === 'Escape') {
+			dispatch('close');
+		}
+	}
 </script>
+
+<svelte:window on:keyup={handleKeyup} />
 
 <div
 	aria-labelledby="wallet-adapter-modal-title"
