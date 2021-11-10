@@ -113,7 +113,3 @@
 {#if modalVisible}
 	<WalletModal on:close={closeModal} on:connect={connectWallet} />
 {/if}
-
-<style>
-	/* lkjda */
-</style>
