@@ -3,6 +3,7 @@
 	import WalletButton from './WalletButton.svelte';
 	import WalletConnectButton from './WalletConnectButton.svelte';
 	import WalletModal from './WalletModal.svelte';
+	import '../styles/styles.css';
 
 	$: ({ publicKey, wallet, disconnect, connect, select } = $walletStore);
 
@@ -112,3 +113,7 @@
 {#if modalVisible}
 	<WalletModal on:close={closeModal} on:connect={connectWallet} />
 {/if}
+
+<style>
+	/* lkjda */
+</style>
