@@ -1,4 +1,8 @@
-import { WalletNotConnectedError, WalletNotReadyError } from '@solana/wallet-adapter-base';
+import {
+	WalletAdapter,
+	WalletNotConnectedError,
+	WalletNotReadyError
+} from '@solana/wallet-adapter-base';
 import type {
 	MessageSignerWalletAdapter,
 	MessageSignerWalletAdapterProps,
@@ -104,9 +108,18 @@ function createWalletNameStore() {
 
 export const walletNameStore = createWalletNameStore();
 
-export const walletAdapterStore = writable<WalletAdapterStore>({
-	adapter: null
-});
+function createWalletAdapterStore() {
+	const { subscribe, set, update } = writable<WalletAdapterStore>({
+		adapter: null
+	});
+
+	return {
+		subscribe,
+		updateAdapter: (adapter: WalletAdapter) => update(() => ({ adapter }))
+	};
+}
+
+export const walletAdapterStore = createWalletAdapterStore();
 
 export async function initialize({
 	wallets,
@@ -243,10 +256,7 @@ function onConnect() {
 		connected: adapter.connected
 	}));
 
-	walletAdapterStore.update((storeValues: WalletAdapterStore) => ({
-		...storeValues,
-		adapter
-	}));
+	walletAdapterStore.updateAdapter(adapter);
 }
 
 function onDisconnect() {
@@ -268,10 +278,7 @@ walletNameStore.subscribe(({ walletName }: { walletName: WalletName | null }) =>
 		connected: adapter?.connected || false
 	}));
 
-	walletAdapterStore.update((storeValues: WalletAdapterStore) => ({
-		...storeValues,
-		adapter
-	}));
+	walletAdapterStore.updateAdapter(adapter);
 });
 
 // watcher for adapter
