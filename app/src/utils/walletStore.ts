@@ -83,9 +83,25 @@ export const walletStore = writable<WalletStore>({
 	signMessage: undefined
 });
 
-export const walletNameStore = writable<WalletNameStore>({
-	walletName: null
-});
+function createWalletNameStore() {
+	const { subscribe, set, update } = writable<WalletNameStore>({
+		walletName: null
+	});
+
+	return {
+		subscribe,
+		update,
+		reset: () => {
+			console.log('resetting');
+
+			set({
+				walletName: null
+			});
+		}
+	};
+}
+
+export const walletNameStore = createWalletNameStore();
 
 export const walletAdapterStore = writable<WalletAdapterStore>({
 	adapter: null
@@ -139,10 +155,7 @@ async function disconnect(): Promise<void> {
 
 	const { adapter } = get(walletAdapterStore);
 	if (!adapter) {
-		return walletNameStore.update((storeValues: WalletNameStore) => ({
-			...storeValues,
-			walletName: null
-		}));
+		return walletNameStore.reset();
 	}
 
 	try {
@@ -153,10 +166,7 @@ async function disconnect(): Promise<void> {
 		cleanup();
 		await adapter.disconnect();
 	} finally {
-		walletNameStore.update((storeValues: WalletNameStore) => ({
-			...storeValues,
-			walletName: null
-		}));
+		walletNameStore.reset();
 		walletStore.update((storeValues: WalletStore) => ({
 			...storeValues,
 			disconnecting: false
@@ -251,10 +261,7 @@ function onConnect() {
 }
 
 function onDisconnect() {
-	walletNameStore.update((storeValues: WalletNameStore) => ({
-		...storeValues,
-		walletName: null
-	}));
+	walletNameStore.reset();
 }
 
 walletNameStore.subscribe(({ walletName }: { walletName: WalletName | null }) => {
@@ -317,10 +324,7 @@ walletAdapterStore.subscribe(async ({ adapter }: { adapter: Adapter | null }) =>
 		await adapter.connect();
 	} catch (error: unknown) {
 		// Clear the selected wallet
-		walletNameStore.update((storeValues: WalletNameStore) => ({
-			...storeValues,
-			walletName: null
-		}));
+		walletNameStore.reset();
 		// Don't throw error, but onError will still be called
 	} finally {
 		walletStore.update((storeValues: WalletStore) => ({
