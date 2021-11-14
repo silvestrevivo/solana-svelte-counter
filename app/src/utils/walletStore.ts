@@ -183,10 +183,7 @@ async function connect(): Promise<void> {
 	if (!wallet || !adapter) throw newError(new WalletNotSelectedError());
 
 	if (!ready) {
-		walletNameStore.update((storeValues: WalletNameStore) => ({
-			...storeValues,
-			walletName: null
-		}));
+		walletNameStore.reset();
 		window.open(wallet.url, '_blank');
 		throw newError(new WalletNotReadyError());
 	}
@@ -198,10 +195,7 @@ async function connect(): Promise<void> {
 		}));
 		await adapter.connect();
 	} catch (error: unknown) {
-		walletNameStore.update((storeValues: WalletNameStore) => ({
-			...storeValues,
-			walletName: null
-		}));
+		walletNameStore.reset();
 		throw error;
 	} finally {
 		walletStore.update((storeValues: WalletStore) => ({
