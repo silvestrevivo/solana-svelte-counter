@@ -92,11 +92,12 @@ function createWalletNameStore() {
 		subscribe,
 		update,
 		reset: () => {
-			console.log('resetting');
+			const { localStorageKey } = get(walletConfigStore);
 
 			set({
 				walletName: null
 			});
+			setLocalStorage(localStorageKey, null);
 		}
 	};
 }
@@ -265,11 +266,6 @@ function onDisconnect() {
 }
 
 walletNameStore.subscribe(({ walletName }: { walletName: WalletName | null }) => {
-	const { localStorageKey, wallets } = get(walletConfigStore);
-	if (wallets.length > 0) {
-		setLocalStorage(localStorageKey, walletName);
-	}
-
 	console.log('*** wallet name running ***');
 
 	const { walletsByName } = get(walletConfigStore);
