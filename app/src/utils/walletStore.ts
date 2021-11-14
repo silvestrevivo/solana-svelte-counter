@@ -216,6 +216,7 @@ async function sendTransaction(
 
 // Handle the adapter events.
 function onReady() {
+	console.log('wallet ready');
 	walletStore.update((storeValues: WalletStore) => ({
 		...storeValues,
 		ready: true
@@ -232,6 +233,8 @@ function onConnect() {
 	const { adapter } = get(walletAdapterStore);
 	const { wallet } = get(walletStore);
 	if (!adapter || !wallet) return;
+
+	console.log('wallet connected');
 
 	walletStore.update((storeValues: WalletStore) => ({
 		...storeValues,
@@ -260,6 +263,8 @@ walletNameStore.subscribe(({ walletName }: { walletName: WalletName | null }) =>
 		setLocalStorage(localStorageKey, walletName);
 	}
 
+	console.log('*** wallet name running ***');
+
 	const { walletsByName } = get(walletConfigStore);
 	const wallet = walletsByName?.[walletName as WalletName] ?? null;
 	const adapter = wallet?.adapter() ?? null;
@@ -282,6 +287,8 @@ walletNameStore.subscribe(({ walletName }: { walletName: WalletName | null }) =>
 walletAdapterStore.subscribe(({ adapter }: { adapter: Adapter | null }) => {
 	if (!adapter) return;
 
+	console.log('*** adding event listeners ***');
+
 	const { onError } = get(walletConfigStore);
 
 	adapter.on('ready', onReady);
@@ -296,6 +303,8 @@ walletAdapterStore.subscribe(async ({ adapter }: { adapter: Adapter | null }) =>
 
 	const { autoConnect } = get(walletConfigStore);
 	if (!autoConnect) return;
+
+	console.log('*** autoConnect subscriber running ***');
 
 	const { ready, connected, connecting } = get(walletStore);
 	if (!ready || connected || connecting) return;
@@ -328,6 +337,8 @@ walletAdapterStore.subscribe(({ adapter }: { adapter: Adapter | null }) => {
 	let signMessage: MessageSignerWalletAdapter['signMessage'] | undefined = undefined;
 
 	if (adapter) {
+		console.log('*** signature adapter store ***');
+
 		// Sign a transaction if the wallet supports it
 		if ('signTransaction' in adapter) {
 			signTransaction = async function (transaction: Transaction) {
@@ -367,6 +378,8 @@ walletAdapterStore.subscribe(({ adapter }: { adapter: Adapter | null }) => {
 function cleanup(): void {
 	const { adapter } = get(walletAdapterStore);
 	if (!adapter) return;
+
+	console.log('*** cleanup listeners ***');
 
 	const { onError } = get(walletConfigStore);
 
