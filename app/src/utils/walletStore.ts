@@ -90,7 +90,7 @@ function createWalletNameStore() {
 
 	return {
 		subscribe,
-		update,
+		updateName: (walletName: WalletName) => update(() => ({ walletName })),
 		reset: () => {
 			const { localStorageKey } = get(walletConfigStore);
 
@@ -131,10 +131,7 @@ export async function initialize({
 		onError
 	}));
 
-	walletNameStore.update((storeValues: WalletNameStore) => ({
-		...storeValues,
-		walletName: getLocalStorage<WalletName>(localStorageKey)
-	}));
+	walletNameStore.updateName(getLocalStorage<WalletName>(localStorageKey));
 }
 
 async function select(newName: WalletName | null): Promise<void> {
@@ -144,10 +141,7 @@ async function select(newName: WalletName | null): Promise<void> {
 	const { adapter } = get(walletAdapterStore);
 	if (adapter) await disconnect();
 
-	walletNameStore.update((storeValues: WalletNameStore) => ({
-		...storeValues,
-		walletName: newName
-	}));
+	walletNameStore.updateName(newName);
 }
 
 async function disconnect(): Promise<void> {
