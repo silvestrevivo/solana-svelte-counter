@@ -1,8 +1,4 @@
-import {
-	WalletAdapter,
-	WalletNotConnectedError,
-	WalletNotReadyError
-} from '@solana/wallet-adapter-base';
+import { WalletNotConnectedError, WalletNotReadyError } from '@solana/wallet-adapter-base';
 import type {
 	MessageSignerWalletAdapter,
 	MessageSignerWalletAdapterProps,
@@ -115,7 +111,24 @@ function createWalletAdapterStore() {
 
 	return {
 		subscribe,
-		updateAdapter: (adapter: WalletAdapter) => update(() => ({ adapter }))
+		updateAdapter: (adapter) => {
+			// clean up adapter event listeners
+			cleanup();
+
+			// update store
+			update(() => ({ adapter }));
+
+			if (!adapter) return;
+			// add event listeners
+			console.log('*** adding event listeners ***');
+
+			const { onError } = get(walletConfigStore);
+
+			adapter.on('ready', onReady);
+			adapter.on('connect', onConnect);
+			adapter.on('disconnect', onDisconnect);
+			adapter.on('error', onError);
+		}
 	};
 }
 
@@ -279,20 +292,6 @@ walletNameStore.subscribe(({ walletName }: { walletName: WalletName | null }) =>
 	}));
 
 	walletAdapterStore.updateAdapter(adapter);
-});
-
-// watcher for adapter
-walletAdapterStore.subscribe(({ adapter }: { adapter: Adapter | null }) => {
-	if (!adapter) return;
-
-	console.log('*** adding event listeners ***');
-
-	const { onError } = get(walletConfigStore);
-
-	adapter.on('ready', onReady);
-	adapter.on('connect', onConnect);
-	adapter.on('disconnect', onDisconnect);
-	adapter.on('error', onError);
 });
 
 // watcher for auto-connect
