@@ -157,7 +157,11 @@ export async function initialize({
 		onError
 	}));
 
-	walletNameStore.updateName(getLocalStorage<WalletName>(localStorageKey));
+	const walletName = getLocalStorage<WalletName>(localStorageKey);
+
+	if (walletName) {
+		walletNameStore.updateName(walletName);
+	}
 }
 
 async function select(newName: WalletName | null): Promise<void> {
