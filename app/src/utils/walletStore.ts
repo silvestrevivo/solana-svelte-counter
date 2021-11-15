@@ -184,7 +184,6 @@ async function disconnect(): Promise<void> {
 			...storeValues,
 			disconnecting: true
 		}));
-		cleanup();
 		await adapter.disconnect();
 	} finally {
 		walletNameStore.reset();
