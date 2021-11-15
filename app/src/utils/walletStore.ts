@@ -105,7 +105,7 @@ function createWalletNameStore() {
 export const walletNameStore = createWalletNameStore();
 
 function createWalletAdapterStore() {
-	const { subscribe, set, update } = writable<WalletAdapterStore>({
+	const { subscribe, set } = writable<WalletAdapterStore>({
 		adapter: null
 	});
 
@@ -116,7 +116,7 @@ function createWalletAdapterStore() {
 			cleanup();
 
 			// update store
-			update(() => ({ adapter }));
+			set({ adapter });
 
 			if (!adapter) return;
 			// add event listeners
