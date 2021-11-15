@@ -145,8 +145,7 @@ export async function initialize({
 	localStorageKey: string;
 	onError?: ErrorHandler;
 }): Promise<void> {
-	walletConfigStore.update((storeValues: WalletConfigStore) => ({
-		...storeValues,
+	walletConfigStore.set({
 		wallets,
 		walletsByName: wallets.reduce((walletsByName, wallet) => {
 			walletsByName[wallet.name] = wallet;
@@ -155,7 +154,7 @@ export async function initialize({
 		autoConnect,
 		localStorageKey,
 		onError
-	}));
+	});
 
 	const walletName = getLocalStorage<WalletName>(localStorageKey);
 
