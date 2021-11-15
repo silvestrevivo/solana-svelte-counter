@@ -111,7 +111,7 @@ function createWalletAdapterStore() {
 
 	return {
 		subscribe,
-		updateAdapter: (adapter) => {
+		updateAdapter: (adapter: Adapter) => {
 			// clean up adapter event listeners
 			cleanup();
 
