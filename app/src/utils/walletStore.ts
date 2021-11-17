@@ -280,8 +280,6 @@ function onConnect() {
 		publicKey: adapter.publicKey,
 		connected: adapter.connected
 	}));
-
-	walletStore.updateAdapter(adapter);
 }
 
 function onDisconnect() {
