@@ -149,7 +149,9 @@ function createWalletStore() {
 		adapter.on('disconnect', onDisconnect);
 		adapter.on('error', onError);
 
-		autoConnect();
+		if (shouldAutoConnect()) {
+			autoConnect();
+		}
 	}
 
 	return {
@@ -287,8 +289,7 @@ function onDisconnect() {
 }
 
 async function autoConnect() {
-	const { adapter, autoConnect, ready, connected, connecting } = get(walletStore);
-	if (!autoConnect || !adapter || !ready || connected || connecting) return;
+	const { adapter } = get(walletStore);
 
 	try {
 		walletStore.setConnecting(true);
@@ -315,4 +316,10 @@ function removeAdapterEventListeners(): void {
 if (typeof window !== 'undefined') {
 	// Ensure the adapter listeners are invalidated before refreshing the page.
 	window.addEventListener('beforeunload', removeAdapterEventListeners);
+}
+
+function shouldAutoConnect(): boolean {
+	const { adapter, autoConnect, ready, connected, connecting } = get(walletStore);
+
+	return !(!autoConnect || !adapter || !ready || connected || connecting);
 }
