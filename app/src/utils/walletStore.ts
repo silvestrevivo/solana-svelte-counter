@@ -49,6 +49,11 @@ interface WalletStore {
 	signMessage: MessageSignerWalletAdapterProps['signMessage'] | undefined;
 }
 
+type WalletConfig = Pick<
+	WalletStore,
+	'wallets' | 'walletsByName' | 'autoConnect' | 'localStorageKey' | 'onError'
+>;
+
 function createWalletStore() {
 	const { subscribe, update } = writable<WalletStore>({
 		walletName: null,
@@ -152,13 +157,7 @@ function createWalletStore() {
 		updateName: (walletName: WalletName) => updateWalletName(walletName),
 		resetWalletName: () => updateWalletName(null),
 		updateAdapter: (adapter: Adapter) => updateAdapter(adapter),
-		updateConfig: (walletConfig: {
-			wallets: Wallet[];
-			walletsByName: WalletDictionary;
-			autoConnect: boolean;
-			localStorageKey: string;
-			onError: ErrorHandler;
-		}) => {
+		updateConfig: (walletConfig: WalletConfig) =>
 			update((store) => ({
 				...store,
 				...walletConfig
@@ -175,18 +174,15 @@ export async function initialize({
 	autoConnect = false,
 	localStorageKey = 'walletAdapter',
 	onError = (error: WalletError) => console.error(error)
-}: {
-	wallets: Wallet[];
-	autoConnect?: boolean;
-	localStorageKey: string;
-	onError?: ErrorHandler;
-}): Promise<void> {
+}: WalletConfig): Promise<void> {
+	const walletsByName = wallets.reduce((walletsByName, wallet) => {
+		walletsByName[wallet.name] = wallet;
+		return walletsByName;
+	}, {} as WalletDictionary);
+
 	walletStore.updateConfig({
 		wallets,
-		walletsByName: wallets.reduce((walletsByName, wallet) => {
-			walletsByName[wallet.name] = wallet;
-			return walletsByName;
-		}, {} as WalletDictionary),
+		walletsByName,
 		autoConnect,
 		localStorageKey,
 		onError
@@ -211,10 +207,9 @@ async function select(newName: WalletName | null): Promise<void> {
 }
 
 async function disconnect(): Promise<void> {
-	const { disconnecting } = get(walletStore);
+	const { disconnecting, adapter } = get(walletStore);
 	if (disconnecting) return;
 
-	const { adapter } = get(walletStore);
 	if (!adapter) {
 		return walletStore.resetWalletName();
 	}
@@ -269,7 +264,7 @@ async function sendTransaction(
 	connection: Connection,
 	options?: SendTransactionOptions
 ): Promise<TransactionSignature> {
-	const { connected } = get(walletStore);
+	const { connected, adapter } = get(walletStore);
 	if (!connected) throw newError(new WalletNotConnectedError());
 
 	const { adapter } = get(walletStore);
@@ -294,8 +289,7 @@ function newError(error: WalletError): WalletError {
 }
 
 function onConnect() {
-	const { adapter } = get(walletStore);
-	const { wallet } = get(walletStore);
+	const { adapter, wallet } = get(walletStore);
 	if (!adapter || !wallet) return;
 
 	console.log('wallet connected');
