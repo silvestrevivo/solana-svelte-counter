@@ -153,19 +153,19 @@ function createWalletStore() {
 	}
 
 	return {
-		subscribe,
-		updateName: (walletName: WalletName) => updateWalletName(walletName),
 		resetWalletName: () => updateWalletName(null),
+		setConnecting: (connecting: boolean) => update((store) => ({ ...store, connecting })),
+		setDisconnecting: (disconnecting: boolean) => update((store) => ({ ...store, disconnecting })),
+		setReady: (ready: boolean) => update((store) => ({ ...store, ready })),
+		subscribe,
+		update,
 		updateAdapter: (adapter: Adapter) => updateAdapter(adapter),
 		updateConfig: (walletConfig: WalletConfig) =>
 			update((store) => ({
 				...store,
 				...walletConfig
 			})),
-		update,
-		setConnecting: (connecting: boolean) => update((store) => ({ ...store, connecting })),
-		setDisconnecting: (disconnecting: boolean) => update((store) => ({ ...store, disconnecting })),
-		setReady: (ready: boolean) => update((store) => ({ ...store, ready }))
+		updateName: (walletName: WalletName) => updateWalletName(walletName)
 	};
 }
 
