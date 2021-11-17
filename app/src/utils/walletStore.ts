@@ -150,6 +150,8 @@ function createWalletStore() {
 		adapter.on('connect', onConnect);
 		adapter.on('disconnect', onDisconnect);
 		adapter.on('error', onError);
+
+		autoConnect();
 	}
 
 	return {
@@ -161,8 +163,7 @@ function createWalletStore() {
 			update((store) => ({
 				...store,
 				...walletConfig
-			}));
-		},
+			})),
 		update
 	};
 }
@@ -306,14 +307,10 @@ function onDisconnect() {
 	walletStore.resetWalletName();
 }
 
-// watcher for auto-connect
-walletStore.subscribe(async ({ adapter, autoConnect }: WalletStore) => {
-	if (!adapter || !autoConnect) return;
-
+async function autoConnect() {
+	const { adapter, autoConnect, ready, connected, connecting } = get(walletStore);
+	if (!autoConnect || !adapter || !ready || connected || connecting) return;
 	console.log('*** autoConnect subscriber running ***');
-
-	const { ready, connected, connecting } = get(walletStore);
-	if (!ready || connected || connecting) return;
 
 	try {
 		walletStore.update((storeValues: WalletStore) => ({
@@ -331,7 +328,7 @@ walletStore.subscribe(async ({ adapter, autoConnect }: WalletStore) => {
 			connecting: false
 		}));
 	}
-});
+}
 
 function cleanup(): void {
 	const { adapter, onError } = get(walletStore);
