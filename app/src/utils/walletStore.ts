@@ -162,7 +162,10 @@ function createWalletStore() {
 				...store,
 				...walletConfig
 			})),
-		update
+		update,
+		setConnecting: (connecting: boolean) => update((store) => ({ ...store, connecting })),
+		setDisconnecting: (disconnecting: boolean) => update((store) => ({ ...store, disconnecting })),
+		setReady: (ready: boolean) => update((store) => ({ ...store, ready }))
 	};
 }
 
@@ -212,17 +215,11 @@ async function disconnect(): Promise<void> {
 	}
 
 	try {
-		walletStore.update((storeValues: WalletStore) => ({
-			...storeValues,
-			disconnecting: true
-		}));
+		walletStore.setDisconnecting(true);
 		await adapter.disconnect();
 	} finally {
 		walletStore.resetWalletName();
-		walletStore.update((storeValues: WalletStore) => ({
-			...storeValues,
-			disconnecting: false
-		}));
+		walletStore.setDisconnecting(false);
 	}
 }
 
@@ -239,19 +236,13 @@ async function connect(): Promise<void> {
 	}
 
 	try {
-		walletStore.update((storeValues: WalletStore) => ({
-			...storeValues,
-			connecting: true
-		}));
+		walletStore.setConnecting(true);
 		await adapter.connect();
 	} catch (error: unknown) {
 		walletStore.resetWalletName();
 		throw error;
 	} finally {
-		walletStore.update((storeValues: WalletStore) => ({
-			...storeValues,
-			connecting: false
-		}));
+		walletStore.setConnecting(false);
 	}
 }
 
@@ -269,10 +260,7 @@ async function sendTransaction(
 
 // Handle the adapter events.
 function onReady() {
-	walletStore.update((storeValues: WalletStore) => ({
-		...storeValues,
-		ready: true
-	}));
+	walletStore.setReady(true);
 }
 
 function newError(error: WalletError): WalletError {
@@ -305,20 +293,14 @@ async function autoConnect() {
 	if (!autoConnect || !adapter || !ready || connected || connecting) return;
 
 	try {
-		walletStore.update((storeValues: WalletStore) => ({
-			...storeValues,
-			connecting: true
-		}));
+		walletStore.setConnecting(true);
 		await adapter.connect();
 	} catch (error: unknown) {
 		// Clear the selected wallet
 		walletStore.resetWalletName();
 		// Don't throw error, but onError will still be called
 	} finally {
-		walletStore.update((storeValues: WalletStore) => ({
-			...storeValues,
-			connecting: false
-		}));
+		walletStore.setConnecting(false);
 	}
 }
 
