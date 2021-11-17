@@ -265,8 +265,6 @@ async function sendTransaction(
 ): Promise<TransactionSignature> {
 	const { connected, adapter } = get(walletStore);
 	if (!connected) throw newError(new WalletNotConnectedError());
-
-	const { adapter } = get(walletStore);
 	if (!adapter) throw newError(new WalletNotSelectedError());
 
 	return await adapter.sendTransaction(transaction, connection, options);
