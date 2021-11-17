@@ -153,7 +153,7 @@ function createWalletStore() {
 	}
 
 	return {
-		resetWalletName: () => updateWalletName(null),
+		resetWallet: () => updateWalletName(null),
 		setConnecting: (connecting: boolean) => update((store) => ({ ...store, connecting })),
 		setDisconnecting: (disconnecting: boolean) => update((store) => ({ ...store, disconnecting })),
 		setReady: (ready: boolean) => update((store) => ({ ...store, ready })),
@@ -165,7 +165,7 @@ function createWalletStore() {
 				...store,
 				...walletConfig
 			})),
-		updateName: (walletName: WalletName) => updateWalletName(walletName)
+		updateWallet: (walletName: WalletName) => updateWalletName(walletName)
 	};
 }
 
@@ -193,7 +193,7 @@ export async function initialize({
 	const walletName = getLocalStorage<WalletName>(localStorageKey);
 
 	if (walletName) {
-		walletStore.updateName(walletName);
+		walletStore.updateWallet(walletName);
 	}
 }
 
@@ -203,7 +203,7 @@ async function select(newName: WalletName | null): Promise<void> {
 
 	if (adapter) await disconnect();
 
-	walletStore.updateName(newName);
+	walletStore.updateWallet(newName);
 }
 
 async function disconnect(): Promise<void> {
@@ -211,14 +211,14 @@ async function disconnect(): Promise<void> {
 	if (disconnecting) return;
 
 	if (!adapter) {
-		return walletStore.resetWalletName();
+		return walletStore.resetWallet();
 	}
 
 	try {
 		walletStore.setDisconnecting(true);
 		await adapter.disconnect();
 	} finally {
-		walletStore.resetWalletName();
+		walletStore.resetWallet();
 		walletStore.setDisconnecting(false);
 	}
 }
@@ -230,7 +230,7 @@ async function connect(): Promise<void> {
 	if (!wallet || !adapter) throw newError(new WalletNotSelectedError());
 
 	if (!ready) {
-		walletStore.resetWalletName();
+		walletStore.resetWallet();
 		window.open(wallet.url, '_blank');
 		throw newError(new WalletNotReadyError());
 	}
@@ -239,7 +239,7 @@ async function connect(): Promise<void> {
 		walletStore.setConnecting(true);
 		await adapter.connect();
 	} catch (error: unknown) {
-		walletStore.resetWalletName();
+		walletStore.resetWallet();
 		throw error;
 	} finally {
 		walletStore.setConnecting(false);
@@ -285,7 +285,7 @@ function onConnect() {
 }
 
 function onDisconnect() {
-	walletStore.resetWalletName();
+	walletStore.resetWallet();
 }
 
 async function autoConnect() {
@@ -297,7 +297,7 @@ async function autoConnect() {
 		await adapter.connect();
 	} catch (error: unknown) {
 		// Clear the selected wallet
-		walletStore.resetWalletName();
+		walletStore.resetWallet();
 		// Don't throw error, but onError will still be called
 	} finally {
 		walletStore.setConnecting(false);
