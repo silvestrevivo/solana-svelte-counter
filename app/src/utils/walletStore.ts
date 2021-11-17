@@ -53,7 +53,7 @@ interface WalletStore {
 
 export const walletStore = createWalletStore();
 
-function addAdapterEventListners(adapter: Adapter) {
+function addAdapterEventListeners(adapter: Adapter) {
 	const { onError } = get(walletStore);
 
 	adapter.on('ready', onReady);
@@ -181,7 +181,7 @@ function createWalletStore() {
 				};
 			}
 
-			addAdapterEventListners(adapter);
+			addAdapterEventListeners(adapter);
 		}
 
 		update((store) => ({ ...store, adapter, signTransaction, signAllTransactions, signMessage }));
