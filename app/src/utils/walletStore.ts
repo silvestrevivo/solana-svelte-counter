@@ -18,35 +18,33 @@ type WalletDictionary = { [name in WalletName]: Wallet };
 type ErrorHandler = (error: WalletError) => void;
 
 interface WalletStore {
-	walletName: WalletName | null;
-	adapter: Adapter | null;
-	wallets: Wallet[];
-	walletsByName: WalletDictionary;
 	autoConnect: boolean;
-	localStorageKey: string;
-	onError: ErrorHandler;
-	wallet: Wallet | null;
-	publicKey: PublicKey | null;
-	ready: boolean;
+	wallets: Wallet[];
+
+	adapter: Adapter | null;
 	connected: boolean;
 	connecting: boolean;
 	disconnecting: boolean;
-
-	select(walletName: WalletName): void;
+	localStorageKey: string;
+	onError: ErrorHandler;
+	publicKey: PublicKey | null;
+	ready: boolean;
+	wallet: Wallet | null;
+	walletsByName: WalletDictionary;
+	walletName: WalletName | null;
 
 	connect(): Promise<void>;
-
 	disconnect(): Promise<void>;
-
+	select(walletName: WalletName): void;
 	sendTransaction(
 		transaction: Transaction,
 		connection: Connection,
 		options?: SendTransactionOptions
 	): Promise<TransactionSignature>;
 
-	signTransaction: SignerWalletAdapterProps['signTransaction'] | undefined;
 	signAllTransactions: SignerWalletAdapterProps['signAllTransactions'] | undefined;
 	signMessage: MessageSignerWalletAdapterProps['signMessage'] | undefined;
+	signTransaction: SignerWalletAdapterProps['signTransaction'] | undefined;
 }
 
 type WalletConfig = Pick<
@@ -56,22 +54,22 @@ type WalletConfig = Pick<
 
 function createWalletStore() {
 	const { subscribe, update } = writable<WalletStore>({
-		walletName: null,
-		adapter: null,
-		wallets: [],
-		walletsByName: {} as WalletDictionary,
 		autoConnect: false,
-		localStorageKey: 'walletAdapter',
-		onError: (error: WalletError) => console.error(error),
-		wallet: null,
-		publicKey: null,
-		ready: false,
+		wallets: [],
+		adapter: null,
 		connected: false,
 		connecting: false,
 		disconnecting: false,
-		select,
+		localStorageKey: 'walletAdapter',
+		onError: (error: WalletError) => console.error(error),
+		publicKey: null,
+		ready: false,
+		wallet: null,
+		walletName: null,
+		walletsByName: {} as WalletDictionary,
 		connect,
 		disconnect,
+		select,
 		sendTransaction,
 		signTransaction: undefined,
 		signAllTransactions: undefined,
@@ -100,7 +98,7 @@ function createWalletStore() {
 
 	function updateAdapter(adapter: Adapter) {
 		// clean up adapter event listeners
-		cleanup();
+		removeAdapterEventListeners();
 
 		let signTransaction: SignerWalletAdapter['signTransaction'] | undefined = undefined;
 		let signAllTransactions: SignerWalletAdapter['signAllTransactions'] | undefined = undefined;
@@ -191,8 +189,6 @@ export async function initialize({
 
 	const walletName = getLocalStorage<WalletName>(localStorageKey);
 
-	console.log('*** wallet name: ', walletName);
-
 	if (walletName) {
 		walletStore.updateName(walletName);
 	}
@@ -273,7 +269,6 @@ async function sendTransaction(
 
 // Handle the adapter events.
 function onReady() {
-	console.log('wallet ready');
 	walletStore.update((storeValues: WalletStore) => ({
 		...storeValues,
 		ready: true
@@ -289,8 +284,6 @@ function newError(error: WalletError): WalletError {
 function onConnect() {
 	const { adapter, wallet } = get(walletStore);
 	if (!adapter || !wallet) return;
-
-	console.log('wallet connected');
 
 	walletStore.update((storeValues: WalletStore) => ({
 		...storeValues,
@@ -310,7 +303,6 @@ function onDisconnect() {
 async function autoConnect() {
 	const { adapter, autoConnect, ready, connected, connecting } = get(walletStore);
 	if (!autoConnect || !adapter || !ready || connected || connecting) return;
-	console.log('*** autoConnect subscriber running ***');
 
 	try {
 		walletStore.update((storeValues: WalletStore) => ({
@@ -330,11 +322,9 @@ async function autoConnect() {
 	}
 }
 
-function cleanup(): void {
+function removeAdapterEventListeners(): void {
 	const { adapter, onError } = get(walletStore);
 	if (!adapter) return;
-
-	console.log('*** cleanup listeners ***');
 
 	adapter.off('ready', onReady);
 	adapter.off('connect', onConnect);
@@ -344,5 +334,5 @@ function cleanup(): void {
 
 if (typeof window !== 'undefined') {
 	// Ensure the adapter listeners are invalidated before refreshing the page.
-	window.addEventListener('beforeunload', cleanup);
+	window.addEventListener('beforeunload', removeAdapterEventListeners);
 }
