@@ -89,10 +89,25 @@ function createWalletNameStore() {
 	});
 
 	function updateWalletName(walletName: WalletName | null) {
-		const { localStorageKey } = get(walletConfigStore);
+		const { localStorageKey, walletsByName } = get(walletConfigStore);
 
 		set({ walletName });
 		setLocalStorage(localStorageKey, walletName);
+
+		console.log('*** wallet name running ***');
+
+		const wallet = walletsByName?.[walletName as WalletName] ?? null;
+		const adapter = wallet?.adapter() ?? null;
+
+		walletStore.update((storeValues: WalletStore) => ({
+			...storeValues,
+			wallet,
+			ready: adapter?.ready || false,
+			publicKey: adapter?.publicKey || null,
+			connected: adapter?.connected || false
+		}));
+
+		walletAdapterStore.updateAdapter(adapter);
 	}
 
 	return {
@@ -117,6 +132,48 @@ function createWalletAdapterStore() {
 
 			// update store
 			set({ adapter });
+
+			let signTransaction: SignerWalletAdapter['signTransaction'] | undefined = undefined;
+			let signAllTransactions: SignerWalletAdapter['signAllTransactions'] | undefined = undefined;
+			let signMessage: MessageSignerWalletAdapter['signMessage'] | undefined = undefined;
+
+			if (adapter) {
+				console.log('*** signature adapter store ***');
+
+				// Sign a transaction if the wallet supports it
+				if ('signTransaction' in adapter) {
+					signTransaction = async function (transaction: Transaction) {
+						const { connected } = get(walletStore);
+						if (!connected) throw newError(new WalletNotConnectedError());
+						return await adapter.signTransaction(transaction);
+					};
+				}
+
+				// Sign multiple transactions if the wallet supports it
+				if ('signAllTransactions' in adapter) {
+					signAllTransactions = async function (transactions: Transaction[]) {
+						const { connected } = get(walletStore);
+						if (!connected) throw newError(new WalletNotConnectedError());
+						return await adapter.signAllTransactions(transactions);
+					};
+				}
+
+				// Sign an arbitrary message if the wallet supports it
+				if ('signMessage' in adapter) {
+					signMessage = async function (message: Uint8Array) {
+						const { connected } = get(walletStore);
+						if (!connected) throw newError(new WalletNotConnectedError());
+						return await adapter.signMessage(message);
+					};
+				}
+			}
+
+			walletStore.update((storeValues: WalletStore) => ({
+				...storeValues,
+				signTransaction,
+				signAllTransactions,
+				signMessage
+			}));
 
 			if (!adapter) return;
 			// add event listeners
@@ -280,24 +337,6 @@ function onDisconnect() {
 	walletNameStore.reset();
 }
 
-walletNameStore.subscribe(({ walletName }: { walletName: WalletName | null }) => {
-	console.log('*** wallet name running ***');
-
-	const { walletsByName } = get(walletConfigStore);
-	const wallet = walletsByName?.[walletName as WalletName] ?? null;
-	const adapter = wallet?.adapter() ?? null;
-
-	walletStore.update((storeValues: WalletStore) => ({
-		...storeValues,
-		wallet,
-		ready: adapter?.ready || false,
-		publicKey: adapter?.publicKey || null,
-		connected: adapter?.connected || false
-	}));
-
-	walletAdapterStore.updateAdapter(adapter);
-});
-
 // watcher for auto-connect
 walletAdapterStore.subscribe(async ({ adapter }: { adapter: Adapter | null }) => {
 	if (!adapter) return;
@@ -326,51 +365,6 @@ walletAdapterStore.subscribe(async ({ adapter }: { adapter: Adapter | null }) =>
 			connecting: false
 		}));
 	}
-});
-
-// watcher for signature functions
-walletAdapterStore.subscribe(({ adapter }: { adapter: Adapter | null }) => {
-	let signTransaction: SignerWalletAdapter['signTransaction'] | undefined = undefined;
-	let signAllTransactions: SignerWalletAdapter['signAllTransactions'] | undefined = undefined;
-	let signMessage: MessageSignerWalletAdapter['signMessage'] | undefined = undefined;
-
-	if (adapter) {
-		console.log('*** signature adapter store ***');
-
-		// Sign a transaction if the wallet supports it
-		if ('signTransaction' in adapter) {
-			signTransaction = async function (transaction: Transaction) {
-				const { connected } = get(walletStore);
-				if (!connected) throw newError(new WalletNotConnectedError());
-				return await adapter.signTransaction(transaction);
-			};
-		}
-
-		// Sign multiple transactions if the wallet supports it
-		if ('signAllTransactions' in adapter) {
-			signAllTransactions = async function (transactions: Transaction[]) {
-				const { connected } = get(walletStore);
-				if (!connected) throw newError(new WalletNotConnectedError());
-				return await adapter.signAllTransactions(transactions);
-			};
-		}
-
-		// Sign an arbitrary message if the wallet supports it
-		if ('signMessage' in adapter) {
-			signMessage = async function (message: Uint8Array) {
-				const { connected } = get(walletStore);
-				if (!connected) throw newError(new WalletNotConnectedError());
-				return await adapter.signMessage(message);
-			};
-		}
-	}
-
-	walletStore.update((storeValues: WalletStore) => ({
-		...storeValues,
-		signTransaction,
-		signAllTransactions,
-		signMessage
-	}));
 });
 
 function cleanup(): void {
