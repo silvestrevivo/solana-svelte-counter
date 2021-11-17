@@ -230,10 +230,9 @@ async function disconnect(): Promise<void> {
 }
 
 async function connect(): Promise<void> {
-	const { connected, connecting, disconnecting, wallet, ready } = get(walletStore);
+	const { connected, connecting, disconnecting, wallet, ready, adapter } = get(walletStore);
 	if (connected || connecting || disconnecting) return;
 
-	const { adapter } = get(walletStore);
 	if (!wallet || !adapter) throw newError(new WalletNotSelectedError());
 
 	if (!ready) {
