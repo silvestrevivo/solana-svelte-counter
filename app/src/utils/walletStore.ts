@@ -14,8 +14,12 @@ import { WalletNotSelectedError } from './errors';
 import { getLocalStorage, setLocalStorage } from './localStorage';
 
 type Adapter = ReturnType<Wallet['adapter']>;
-type WalletDictionary = { [name in WalletName]: Wallet };
 type ErrorHandler = (error: WalletError) => void;
+type WalletDictionary = { [name in WalletName]: Wallet };
+type WalletConfig = Pick<
+	WalletStore,
+	'wallets' | 'walletsByName' | 'autoConnect' | 'localStorageKey' | 'onError'
+>;
 
 interface WalletStore {
 	autoConnect: boolean;
@@ -47,10 +51,54 @@ interface WalletStore {
 	signTransaction: SignerWalletAdapterProps['signTransaction'] | undefined;
 }
 
-type WalletConfig = Pick<
-	WalletStore,
-	'wallets' | 'walletsByName' | 'autoConnect' | 'localStorageKey' | 'onError'
->;
+export const walletStore = createWalletStore();
+
+function addAdapterEventListners(adapter: Adapter) {
+	const { onError } = get(walletStore);
+
+	adapter.on('ready', onReady);
+	adapter.on('connect', onConnect);
+	adapter.on('disconnect', onDisconnect);
+	adapter.on('error', onError);
+}
+
+async function autoConnect() {
+	const { adapter } = get(walletStore);
+
+	try {
+		walletStore.setConnecting(true);
+		await adapter.connect();
+	} catch (error: unknown) {
+		// Clear the selected wallet
+		walletStore.resetWallet();
+		// Don't throw error, but onError will still be called
+	} finally {
+		walletStore.setConnecting(false);
+	}
+}
+
+async function connect(): Promise<void> {
+	const { connected, connecting, disconnecting, wallet, ready, adapter } = get(walletStore);
+	if (connected || connecting || disconnecting) return;
+
+	if (!wallet || !adapter) throw newError(new WalletNotSelectedError());
+
+	if (!ready) {
+		walletStore.resetWallet();
+		window.open(wallet.url, '_blank');
+		throw newError(new WalletNotReadyError());
+	}
+
+	try {
+		walletStore.setConnecting(true);
+		await adapter.connect();
+	} catch (error: unknown) {
+		walletStore.resetWallet();
+		throw error;
+	} finally {
+		walletStore.setConnecting(false);
+	}
+}
 
 function createWalletStore() {
 	const { subscribe, update } = writable<WalletStore>({
@@ -76,28 +124,29 @@ function createWalletStore() {
 		signMessage: undefined
 	});
 
-	function updateWalletName(walletName: WalletName | null) {
-		const { localStorageKey, walletsByName } = get(walletStore);
-
-		console.log('*** wallet name running ***');
-
-		const wallet = walletsByName?.[walletName as WalletName] ?? null;
-		const adapter = wallet?.adapter() ?? null;
-
+	function updateWalletState(wallet: Wallet | null, adapter: Adapter | null) {
+		updateAdapter(adapter);
 		update((store) => ({
 			...store,
-			walletName,
+			walletName: wallet?.name || null,
 			wallet,
 			ready: adapter?.ready || false,
 			publicKey: adapter?.publicKey || null,
 			connected: adapter?.connected || false
 		}));
-		setLocalStorage(localStorageKey, walletName);
-		updateAdapter(adapter);
 	}
 
-	function updateAdapter(adapter: Adapter) {
-		// clean up adapter event listeners
+	function updateWalletName(walletName: WalletName | null) {
+		const { localStorageKey, walletsByName } = get(walletStore);
+
+		const wallet = walletsByName?.[walletName as WalletName] ?? null;
+		const adapter = wallet?.adapter() ?? null;
+
+		setLocalStorage(localStorageKey, walletName);
+		updateWalletState(wallet, adapter);
+	}
+
+	function updateAdapter(adapter: Adapter | null) {
 		removeAdapterEventListeners();
 
 		let signTransaction: SignerWalletAdapter['signTransaction'] | undefined = undefined;
@@ -105,8 +154,6 @@ function createWalletStore() {
 		let signMessage: MessageSignerWalletAdapter['signMessage'] | undefined = undefined;
 
 		if (adapter) {
-			console.log('*** signature adapter store ***');
-
 			// Sign a transaction if the wallet supports it
 			if ('signTransaction' in adapter) {
 				signTransaction = async function (transaction: Transaction) {
@@ -133,21 +180,11 @@ function createWalletStore() {
 					return await adapter.signMessage(message);
 				};
 			}
+
+			addAdapterEventListners(adapter);
 		}
 
-		// update store
 		update((store) => ({ ...store, adapter, signTransaction, signAllTransactions, signMessage }));
-
-		if (!adapter) return;
-		// add event listeners
-		console.log('*** adding event listeners ***');
-
-		const { onError } = get(walletStore);
-
-		adapter.on('ready', onReady);
-		adapter.on('connect', onConnect);
-		adapter.on('disconnect', onDisconnect);
-		adapter.on('error', onError);
 
 		if (shouldAutoConnect()) {
 			autoConnect();
@@ -160,18 +197,32 @@ function createWalletStore() {
 		setDisconnecting: (disconnecting: boolean) => update((store) => ({ ...store, disconnecting })),
 		setReady: (ready: boolean) => update((store) => ({ ...store, ready })),
 		subscribe,
-		update,
-		updateAdapter: (adapter: Adapter) => updateAdapter(adapter),
 		updateConfig: (walletConfig: WalletConfig) =>
 			update((store) => ({
 				...store,
 				...walletConfig
 			})),
+		updateStatus: (walletState) => update((store) => ({ ...store, ...walletState })),
 		updateWallet: (walletName: WalletName) => updateWalletName(walletName)
 	};
 }
 
-export const walletStore = createWalletStore();
+async function disconnect(): Promise<void> {
+	const { disconnecting, adapter } = get(walletStore);
+	if (disconnecting) return;
+
+	if (!adapter) {
+		return walletStore.resetWallet();
+	}
+
+	try {
+		walletStore.setDisconnecting(true);
+		await adapter.disconnect();
+	} finally {
+		walletStore.resetWallet();
+		walletStore.setDisconnecting(false);
+	}
+}
 
 export async function initialize({
 	wallets,
@@ -199,6 +250,41 @@ export async function initialize({
 	}
 }
 
+function newError(error: WalletError): WalletError {
+	const { onError } = get(walletStore);
+	onError(error);
+	return error;
+}
+
+function onConnect() {
+	const { adapter, wallet } = get(walletStore);
+	if (!adapter || !wallet) return;
+
+	walletStore.updateStatus({
+		ready: adapter.ready,
+		publicKey: adapter.publicKey,
+		connected: adapter.connected
+	});
+}
+
+function onDisconnect() {
+	walletStore.resetWallet();
+}
+
+function onReady() {
+	walletStore.setReady(true);
+}
+
+function removeAdapterEventListeners(): void {
+	const { adapter, onError } = get(walletStore);
+	if (!adapter) return;
+
+	adapter.off('ready', onReady);
+	adapter.off('connect', onConnect);
+	adapter.off('disconnect', onDisconnect);
+	adapter.off('error', onError);
+}
+
 async function select(newName: WalletName | null): Promise<void> {
 	const { walletName, adapter } = get(walletStore);
 	if (walletName === newName) return;
@@ -206,46 +292,6 @@ async function select(newName: WalletName | null): Promise<void> {
 	if (adapter) await disconnect();
 
 	walletStore.updateWallet(newName);
-}
-
-async function disconnect(): Promise<void> {
-	const { disconnecting, adapter } = get(walletStore);
-	if (disconnecting) return;
-
-	if (!adapter) {
-		return walletStore.resetWallet();
-	}
-
-	try {
-		walletStore.setDisconnecting(true);
-		await adapter.disconnect();
-	} finally {
-		walletStore.resetWallet();
-		walletStore.setDisconnecting(false);
-	}
-}
-
-async function connect(): Promise<void> {
-	const { connected, connecting, disconnecting, wallet, ready, adapter } = get(walletStore);
-	if (connected || connecting || disconnecting) return;
-
-	if (!wallet || !adapter) throw newError(new WalletNotSelectedError());
-
-	if (!ready) {
-		walletStore.resetWallet();
-		window.open(wallet.url, '_blank');
-		throw newError(new WalletNotReadyError());
-	}
-
-	try {
-		walletStore.setConnecting(true);
-		await adapter.connect();
-	} catch (error: unknown) {
-		walletStore.resetWallet();
-		throw error;
-	} finally {
-		walletStore.setConnecting(false);
-	}
 }
 
 async function sendTransaction(
@@ -260,66 +306,13 @@ async function sendTransaction(
 	return await adapter.sendTransaction(transaction, connection, options);
 }
 
-// Handle the adapter events.
-function onReady() {
-	walletStore.setReady(true);
-}
+function shouldAutoConnect(): boolean {
+	const { adapter, autoConnect, ready, connected, connecting } = get(walletStore);
 
-function newError(error: WalletError): WalletError {
-	const { onError } = get(walletStore);
-	onError(error);
-	return error;
-}
-
-function onConnect() {
-	const { adapter, wallet } = get(walletStore);
-	if (!adapter || !wallet) return;
-
-	walletStore.update((storeValues: WalletStore) => ({
-		...storeValues,
-		wallet,
-		ready: adapter.ready,
-		publicKey: adapter.publicKey,
-		connected: adapter.connected
-	}));
-}
-
-function onDisconnect() {
-	walletStore.resetWallet();
-}
-
-async function autoConnect() {
-	const { adapter } = get(walletStore);
-
-	try {
-		walletStore.setConnecting(true);
-		await adapter.connect();
-	} catch (error: unknown) {
-		// Clear the selected wallet
-		walletStore.resetWallet();
-		// Don't throw error, but onError will still be called
-	} finally {
-		walletStore.setConnecting(false);
-	}
-}
-
-function removeAdapterEventListeners(): void {
-	const { adapter, onError } = get(walletStore);
-	if (!adapter) return;
-
-	adapter.off('ready', onReady);
-	adapter.off('connect', onConnect);
-	adapter.off('disconnect', onDisconnect);
-	adapter.off('error', onError);
+	return !(!autoConnect || !adapter || !ready || connected || connecting);
 }
 
 if (typeof window !== 'undefined') {
 	// Ensure the adapter listeners are invalidated before refreshing the page.
 	window.addEventListener('beforeunload', removeAdapterEventListeners);
-}
-
-function shouldAutoConnect(): boolean {
-	const { adapter, autoConnect, ready, connected, connecting } = get(walletStore);
-
-	return !(!autoConnect || !adapter || !ready || connected || connecting);
 }
