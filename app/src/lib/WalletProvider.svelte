@@ -7,7 +7,7 @@
 </script>
 
 <script lang="ts">
-	import type { Wallet } from '@solana/wallet-adapter-wallets';
+	import type { Wallet } from '$utils/walletStore';
 	import { initialize } from '$utils/walletStore';
 	import type { WalletError } from '@solana/wallet-adapter-base';
 
