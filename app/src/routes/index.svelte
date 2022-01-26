@@ -2,6 +2,7 @@
   import WalletMultiButton from '$lib/WalletMultiButton.svelte';
   import { walletStore } from '$utils/walletStore';
   import { workSpace } from '$utils/workSpace';
+  import { fly } from 'svelte/transition';
 
   let value;
 
@@ -46,9 +47,9 @@
   <div class="title">
     <h1>Solana Svelte Counter</h1>
     <p>
-      Demo for <a href="https://github.com/solana-labs/wallet-adapter"
-        >solana-labs/wallet-adapter</a
-      >, for adapter implementation in Svelte
+      Demo of <a href="https://github.com/solana-labs/wallet-adapter"
+        >svelte-on-solana/wallet-adapter</a
+      >, for implementation in Svelte of the <strong>wallet adapter</strong>
     </p>
   </div>
 
@@ -56,16 +57,23 @@
     <WalletMultiButton />
   </div>
 
-  <div class="wrapper-content">
-    {#if value}
-      <button on:click={increment}>Increment</button>
-      <p class="value">Value: {value}</p>
-    {:else}
-      <button on:click={createCounter}>Create counter</button>
-    {/if}
-  </div>
-
   {#if $walletStore?.connected}
+    <div class="wrapper-content">
+      {#if value}
+        <button on:click={increment}>Increment</button>
+        <p class="value">
+          Value:
+          {#key value}
+            <span
+              in:fly={{ duration: 500, y: -100 }}
+              out:fly={{ duration: 500, y: 100 }}>{value}</span
+            >
+          {/key}
+        </p>
+      {:else}
+        <button on:click={createCounter}>Create counter</button>
+      {/if}
+    </div>
     <p class="warning">You are connected to DevNet!</p>
   {:else}
     <p class="warning">You are not connected...</p>
@@ -74,16 +82,24 @@
 
 <style>
   :global(body) {
-    padding: 0;
+    padding: 100px;
     margin: 0;
+    background-color: #333333;
   }
   .wrapper-app {
     height: 100vh;
-    font-family: 'Inter', 'Roboto', 'Helvetica Neue', Helvetica, Arial,
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS',
       sans-serif;
   }
   .title {
     text-align: center;
+    color: white;
+    font-size: 20px;
+    margin-bottom: 40px;
+  }
+
+  a {
+    color: #676796;
   }
 
   .address {
@@ -95,7 +111,6 @@
   }
 
   .wrapper-content {
-    border: 2px solid rgb(226, 153, 43);
     border-radius: 5px;
     padding: 50px;
     width: 400px;
@@ -105,19 +120,25 @@
   }
 
   button {
-    border: 1px solid grey;
-    padding: 10px;
+    border: none;
+    padding: 16px;
     border-radius: 5px;
     font-size: 16px;
     cursor: pointer;
+    color: white;
+    background-color: #4e44ce;
   }
 
   .value {
-    font-size: 30px;
+    font-size: 40px;
+    padding: 25px;
+    color: white;
   }
 
   .warning {
-    color: grey;
+    color: #ca4b4b;
     text-align: center;
+    padding: 40px;
+    font-size: 20px;
   }
 </style>
