@@ -10,7 +10,6 @@
 		container: HTMLDivElement;
 
 	$: numberOfWalletsShown = showMoreOptions ? $walletStore.wallets.length : maxNumberOfWallets;
-	$: console.log('$walletStore.wallets: ', $walletStore.wallets);
 
 	const dispatch = createEventDispatcher();
 
