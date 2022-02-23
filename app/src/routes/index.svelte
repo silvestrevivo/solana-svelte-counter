@@ -1,10 +1,12 @@
 <script lang="ts">
-  import WalletMultiButton from '$lib/WalletMultiButton.svelte';
-  import { walletStore } from '$utils/walletStore';
+  import { WalletMultiButton } from '@svelte-on-solana/wallet-adapter-ui';
+  import { walletStore } from '@svelte-on-solana/wallet-adapter-core';
   import { workSpace } from '$utils/workSpace';
   import { fly } from 'svelte/transition';
 
   let value;
+
+  $: console.log('value: ', value);
 
   async function createCounter() {
     try {
@@ -21,7 +23,6 @@
       const account = await $workSpace.program.account.baseAccount.fetch(
         $workSpace.baseAccount.publicKey,
       );
-      console.log('account: ', account);
       value = account.count.toString();
     } catch (err) {
       console.log('Transaction error: ', err);
@@ -38,7 +39,6 @@
     const account = await $workSpace.program.account.baseAccount.fetch(
       $workSpace.baseAccount.publicKey,
     );
-    console.log('account: ', account);
     value = account.count.toString();
   }
 </script>

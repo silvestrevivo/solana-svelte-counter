@@ -2,8 +2,11 @@
   import { Connection } from '@solana/web3.js';
   import type { Commitment, ConnectionConfig } from '@solana/web3.js';
   import { workSpace } from '$utils/workSpace';
+  // import { workSpace } from '@svelte-on-solana/wallet-adapter-ui';
+
   import * as pkg from '@project-serum/anchor';
-  import { walletStore } from '$utils/walletStore';
+  // import { walletStore } from '$utils/walletStore';
+  import { walletStore } from '@svelte-on-solana/wallet-adapter-core';
 
   const { web3, Provider, Program } = pkg;
 
