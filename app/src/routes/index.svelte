@@ -1,7 +1,7 @@
 <script lang="ts">
   import { WalletMultiButton } from '@svelte-on-solana/wallet-adapter-ui';
   import { walletStore } from '@svelte-on-solana/wallet-adapter-core';
-  import { workSpace } from '$utils/workSpace';
+  import { workSpace } from '@svelte-on-solana/wallet-adapter-anchor';
   import { fly } from 'svelte/transition';
 
   let value;
