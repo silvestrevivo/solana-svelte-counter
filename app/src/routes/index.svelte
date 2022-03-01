@@ -2,6 +2,7 @@
   import { WalletMultiButton } from '@svelte-on-solana/wallet-adapter-ui';
   import { walletStore } from '@svelte-on-solana/wallet-adapter-core';
   import { workSpace } from '@svelte-on-solana/wallet-adapter-anchor';
+  //import { workSpace } from '$lib/workSpace';
   import { fly } from 'svelte/transition';
 
   let value;

@@ -3,6 +3,7 @@
   import { clusterApiUrl } from '@solana/web3.js';
   import { WalletProvider } from '@svelte-on-solana/wallet-adapter-ui';
   import { AnchorConnectionProvider } from '@svelte-on-solana/wallet-adapter-anchor';
+  //import AnchorConnectionProvider from '$lib/AnchorConnectionProvider.svelte';
   import idl from '../../../target/idl/solana_svelte_counter.json';
 
   const localStorageKey = 'walletAdapter';
