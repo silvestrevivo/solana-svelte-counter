@@ -3,7 +3,7 @@ import adapter from '@sveltejs/adapter-static';
 import path from 'path';
 
 const config = {
-	preprocess: preprocess(),
+  preprocess: preprocess(),
 
 	kit: {
 		adapter: adapter(),
@@ -16,12 +16,12 @@ const config = {
           $utils: path.resolve('src/utils/'),
         },
       },
-			define: {
+      define: {
         // This makes @project-serum/anchor 's process error not happen since it replaces all instances of process.env.BROWSER with true
         'process.env.BROWSER': true
       },
     },
-	}
+  },
 };
 
 export default config;
