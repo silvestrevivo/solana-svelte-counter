@@ -1,18 +1,19 @@
 # solana-svelte-counter
 
-Anchor and sveltekit application to test the wallet adapter. On the `root folder` lives the Anchor application, in the `app` the SvelteKit.
+**Anchor/SvelteKit** application to demo the Svelte wallet adapter. The Anchor application lives in the `root folder`. In the `app` folder you can find the SvelteKit application.
 
-# Anchor
+# Anchor Setup
 
-Clone the repo and run `npn install`. Then build and deploy the smart contract in localhost. Make sure that `solana-test-validator` is running during this process.
+You need to have Cargo and Rust installed to build the contract. First of all, clone the repo and run `yarn install` to add all the dependencies to the Anchor application. Make sure that you have Solana locally in `localhost` and change all the **`devnet`** references to `localhost`. Once that is done, to `build` and `deploy` locally the project run the next command:
 
 ```
-Anchor build
+anchor localnet
 ```
-```
-Anchor deploy
-```
-# Frontend
+
+This command is going to generate the `idl json` file responsible to communicate with the **rpc** from Solana.
+
+# Frontend setup
+
 Frontend is build with SvelteKit. To run it on `localhost:3000`
 
 ```
@@ -20,6 +21,3 @@ cd app
 npm install
 npm run dev
 ```
-
-
-
