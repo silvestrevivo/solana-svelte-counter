@@ -14,7 +14,7 @@
       await $workSpace.program.rpc.create({
         accounts: {
           baseAccount: $workSpace.baseAccount.publicKey,
-          user: $workSpace.provider.wallet.publicKey,
+          user: $walletStore.publicKey,
           systemProgram: $workSpace.systemProgram.programId,
         },
         signers: [$workSpace.baseAccount],

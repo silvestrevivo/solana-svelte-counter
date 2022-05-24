@@ -9,7 +9,7 @@ const config = {
 		adapter: adapter(),
 		vite: {
       optimizeDeps: {
-        include: ['@project-serum/anchor'],
+        include: ['@project-serum/anchor', '@solana/web3.js'],
       },
       resolve: {
         alias: {
