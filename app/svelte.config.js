@@ -7,6 +7,9 @@ const config = {
 
 	kit: {
 		adapter: adapter(),
+    prerender: {
+      default: true
+    },
 		vite: {
       optimizeDeps: {
         include: ['@project-serum/anchor', '@solana/web3.js'],
