@@ -49,7 +49,8 @@
     <p>
       Demo of <a href="https://github.com/solana-labs/wallet-adapter"
         >svelte-on-solana/wallet-adapter</a
-      >, for implementation in Svelte of the <strong>wallet adapter</strong>
+      >, for implementation in Svelte of the
+      <strong>wallet adapter</strong>
     </p>
   </div>
 

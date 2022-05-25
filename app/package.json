@@ -33,8 +33,8 @@
     "@solana/wallet-adapter-wallets": "^0.16.1",
     "@solana/web3.js": "^1.43.1",
     "@svelte-on-solana/wallet-adapter-anchor": "^1.0.14-alpha.0",
-    "@svelte-on-solana/wallet-adapter-core": "^1.0.5-alpha.0",
-    "@svelte-on-solana/wallet-adapter-ui": "^1.0.14-alpha.0",
+    "@svelte-on-solana/wallet-adapter-core": "^1.0.6-alpha.0",
+    "@svelte-on-solana/wallet-adapter-ui": "^1.0.16-alpha.0",
     "buffer": "^6.0.3",
     "eventemitter3": "^4.0.7",
     "process": "^0.11.10"
