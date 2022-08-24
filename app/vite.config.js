@@ -17,10 +17,11 @@ const config = {
   },
   define: {
     // This makes @project-serum/anchor 's process error not happen since it replaces all instances of process.env.BROWSER with true
-    'process.env.BROWSER': true
+    'process.env.BROWSER': true,
+    'process.env.NODE_DEBUG': JSON.stringify(''),
   },
   build: {
-		target: 'esnext'
+		target: 'esnext',
 	}
 };
 
