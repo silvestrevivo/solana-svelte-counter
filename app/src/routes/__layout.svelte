@@ -7,6 +7,14 @@
   //...
   import { walletStore } from '@svelte-on-solana/wallet-adapter-core';
 
+  // import {
+  //   PhantomWalletAdapter,
+  //   SlopeWalletAdapter,
+  //   SolflareWalletAdapter,
+  //   SolletExtensionWalletAdapter,
+  //   TorusWalletAdapter,
+  // } from '@solana/wallet-adapter-wallets';
+
   const localStorageKey = 'walletAdapter';
   const network = clusterApiUrl('devnet');
 
@@ -31,6 +39,14 @@
 
     wallets = walletsMap;
   });
+
+  // const wallets = [
+  //   new PhantomWalletAdapter(),
+  //   new SlopeWalletAdapter(),
+  //   new SolflareWalletAdapter(),
+  //   new SolletExtensionWalletAdapter(),
+  //   new TorusWalletAdapter(),
+  // ];
 
   $: ({ connect, select } = $walletStore);
 
