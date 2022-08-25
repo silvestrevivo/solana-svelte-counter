@@ -1,7 +1,10 @@
 <script lang="ts">
   import { WalletMultiButton } from '@svelte-on-solana/wallet-adapter-ui';
+  // import WalletMultiButton from '$lib/ui/WalletMultiButton.svelte';
   import { walletStore } from '@svelte-on-solana/wallet-adapter-core';
+  // import { walletStore } from '$lib/store/walletStore';
   import { workSpace } from '@svelte-on-solana/wallet-adapter-anchor';
+  // import { workSpace } from '$lib/ui/workSpace';
   import { fly } from 'svelte/transition';
 
   let value;
