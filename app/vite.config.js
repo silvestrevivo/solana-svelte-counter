@@ -4,7 +4,6 @@ import inject from '@rollup/plugin-inject';
 import nodePolyfills from "rollup-plugin-node-polyfills";
 import path from 'path';
 
-
 /** @type {import('vite').UserConfig} */
 const config = {
 	plugins: [sveltekit()],
