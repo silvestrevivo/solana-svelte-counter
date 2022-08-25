@@ -4,16 +4,6 @@
   import { WalletProvider } from '@svelte-on-solana/wallet-adapter-ui';
   import { AnchorConnectionProvider } from '@svelte-on-solana/wallet-adapter-anchor';
   import idl from '../../../target/idl/solana_svelte_counter.json';
-  //...
-  import { walletStore } from '@svelte-on-solana/wallet-adapter-core';
-
-  // import {
-  //   PhantomWalletAdapter,
-  //   SlopeWalletAdapter,
-  //   SolflareWalletAdapter,
-  //   SolletExtensionWalletAdapter,
-  //   TorusWalletAdapter,
-  // } from '@solana/wallet-adapter-wallets';
 
   const localStorageKey = 'walletAdapter';
   const network = clusterApiUrl('devnet');
@@ -39,26 +29,10 @@
 
     wallets = walletsMap;
   });
-
-  // const wallets = [
-  //   new PhantomWalletAdapter(),
-  //   new SlopeWalletAdapter(),
-  //   new SolflareWalletAdapter(),
-  //   new SolletExtensionWalletAdapter(),
-  //   new TorusWalletAdapter(),
-  // ];
-
-  $: ({ connect, select } = $walletStore);
-
-  async function connectWallet() {
-    await select(wallets[4].name);
-    await connect();
-  }
 </script>
 
 <WalletProvider {localStorageKey} {wallets} autoConnect />
 <AnchorConnectionProvider {network} {idl} />
-<button on:click={connectWallet}>connect wallet</button>
 <div>
   <slot />
 </div>
