@@ -19,20 +19,18 @@ const config = {
     alias: {
       $utils: path.resolve('src/utils/'),
       stream: 'rollup-plugin-node-polyfills/polyfills/stream',
-      // events: 'rollup-plugin-node-polyfills/polyfills/events',
-      // assert: 'assert',
-      // crypto: 'crypto-browserify',
-      // util: 'util',
     },
   },
   define: {
     // This makes @project-serum/anchor 's process error not happen since it replaces all instances of process.env.BROWSER with true
     'process.env.BROWSER': true,
-    // 'process.nextTick.BROWSER': true,
     'process.env.NODE_DEBUG': JSON.stringify(''),
   },
   build: {
 		target: 'esnext',
+    commonjsOptions: {
+      transformMixedEsModules: true
+    },
     rollupOptions: {
       plugins: [inject({ Buffer: ['buffer', 'Buffer'] }), nodePolyfills({ crypto: true })],
     },
@@ -40,32 +38,3 @@ const config = {
 };
 
 export default config;
-
-
-
-// const config = {
-//   plugins: [sveltekit()],
-//   define: {
-//     'process.env.BROWSER': true,
-//     'process.nextTick.BROWSER': true,
-//     'process.env.NODE_DEBUG': JSON.stringify(''),
-//   },
-//   optimizeDeps: {
-//     include: ['@project-serum/anchor', '@solana/web3.js', 'buffer'],
-//   },
-//   resolve: {
-//     alias: {
-//       $utils: path.resolve('src/utils/'),
-//       stream: 'rollup-plugin-node-polyfills/polyfills/stream',
-//       events: 'rollup-plugin-node-polyfills/polyfills/events',
-//       assert: 'assert',
-//       crypto: 'crypto-browserify',
-//       util: 'util',
-//     },
-//   },
-//   build: {
-//     rollupOptions: {
-//       plugins: [inject({ Buffer: ['buffer', 'Buffer'] })],
-//     },
-//   },
-// };

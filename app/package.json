@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "@esbuild-plugins/node-globals-polyfill": "^0.1.1",
+    "@originjs/vite-plugin-commonjs": "^1.0.3",
     "@rollup/plugin-inject": "^4.0.4",
     "@sveltejs/adapter-static": "^1.0.0-next.39",
     "@sveltejs/kit": "1.0.0-next.400",
@@ -37,7 +38,7 @@
   "type": "module",
   "dependencies": {
     "@project-serum/anchor": "^0.24.2",
-    "@solana/wallet-adapter-base": "0.9.13",
+    "@solana/wallet-adapter-base": "0.9.16",
     "@solana/wallet-adapter-wallets": "0.18.4",
     "@solana/web3.js": "^1.53.0",
     "@svelte-on-solana/wallet-adapter-anchor": "^1.0.15-alpha.0",
