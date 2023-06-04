@@ -75,7 +75,7 @@
         <button on:click={createCounter}>Create counter</button>
       {/if}
     </div>
-    <p class="warning">You are connected to localhost!</p>
+    <p>You are connected to localhost!</p>
   {:else}
     <p class="warning">You are not connected...</p>
   {/if}
@@ -86,6 +86,7 @@
     padding: 100px;
     margin: 0;
     background-color: #333333;
+    color: white;
   }
   .wrapper-app {
     height: 100vh;
