@@ -114,7 +114,6 @@
   .wrapper-content {
     border-radius: 5px;
     padding: 50px;
-    width: 400px;
     margin: 0 auto;
     text-align: center;
     margin-bottom: 30px;
