@@ -6,7 +6,7 @@
 
   let value;
 
-  $: console.log(`Counter value is: ${value || 'unset'}`);
+  $: value, console.log(`Counter value is: ${value || 'unset'}`);
 
   async function createCounter() {
     try {
