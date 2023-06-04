@@ -8,16 +8,13 @@ The SvelteKit application lives in the `app` folder.
 
 ## Anchor Setup
 
+Make sure that you have [installed Solana CLI tools locally](https://docs.solana.com/cli/install-solana-cli-tools).
+
 You need to have Cargo and Rust installed to build the contract. 
 
 First of all, clone the repo and run `npm install` to add all the dependencies to the Anchor application. 
 
-Make sure that you have installed Solana locally in `localhost`.
-
-Change all the **`devnet`** references to `localhost` in `.svelte` files. 
-Change all the **`devnet`** references to `localnet` in `Ahcor.toml`. 
-
-Once that is done, to build and deploy the project locally, run the command:
+To build and deploy the project locally, run the command:
 
 ```
 npx anchor localnet
