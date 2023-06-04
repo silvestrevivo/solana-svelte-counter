@@ -75,7 +75,7 @@
         <button on:click={createCounter}>Create counter</button>
       {/if}
     </div>
-    <p class="warning">You are connected to DevNet!</p>
+    <p class="warning">You are connected to localhost!</p>
   {:else}
     <p class="warning">You are not connected...</p>
   {/if}

@@ -10,7 +10,7 @@
   import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets";
 
   const localStorageKey = "walletAdapter";
-  const network = clusterApiUrl("devnet");
+  const network = clusterApiUrl("localhost");
 
   let wallets = [new PhantomWalletAdapter()];
   console.log("wallets: ", wallets);
@@ -90,7 +90,7 @@
         <button on:click={createCounter}>Create counter</button>
       {/if}
     </div>
-    <p class="warning">You are connected to DevNet!</p>
+    <p class="warning">You are connected to localhost!</p>
   {:else}
     <p class="warning">You are not connected...</p>
   {/if}

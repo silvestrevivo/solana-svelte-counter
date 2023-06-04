@@ -6,7 +6,7 @@
   import idl from '../../../target/idl/solana_svelte_counter.json';
 
   const localStorageKey = 'walletAdapter';
-  const network = clusterApiUrl('devnet');
+  const network = clusterApiUrl('localhost');
 
   let wallets;
 
