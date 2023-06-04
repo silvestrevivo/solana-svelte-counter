@@ -31,3 +31,9 @@ cd app
 npm install
 npm run dev
 ```
+
+## Wallet localhost setup
+
+You will also need to configure your installed wallet to work with localhost. For example, in Solflare:
+
+`⚙️` > `Network` > `Add custom node +` then add `localnet` with the address `http://127.0.0.1:8899`.
