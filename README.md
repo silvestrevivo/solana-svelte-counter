@@ -8,7 +8,9 @@ The SvelteKit application lives in the `app` folder.
 
 ## Anchor Setup
 
-You need to have Cargo and Rust installed to build the contract. First of all, clone the repo and run `npm install` to add all the dependencies to the Anchor application. 
+You need to have Cargo and Rust installed to build the contract. 
+
+First of all, clone the repo and run `npm install` to add all the dependencies to the Anchor application. 
 
 Make sure that you have installed Solana locally in `localhost`.
 
@@ -21,7 +23,7 @@ Once that is done, to build and deploy the project locally, run the command:
 npx anchor localnet
 ```
 
-This command is going to generate the `idl json` file responsible to communicate with the **rpc** from Solana.
+This command is going to generate the `idl json` file responsible for communicating with the **RPC** from Solana.
 
 ## Frontend setup
 
