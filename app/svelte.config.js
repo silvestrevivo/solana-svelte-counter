@@ -4,10 +4,10 @@ import adapter from '@sveltejs/adapter-static';
 const config = {
   preprocess: preprocess(),
 
-	kit: {
-		adapter: adapter(),
+  kit: {
+    adapter: adapter(),
     prerender: {
-      default: true
+      default: true,
     },
   },
 };
