@@ -12,7 +12,6 @@
   onMount(async () => {
     const {
       PhantomWalletAdapter,
-      SlopeWalletAdapter,
       SolflareWalletAdapter,
       SolletExtensionWalletAdapter,
       TorusWalletAdapter,
@@ -20,7 +19,6 @@
 
     const walletsMap = [
       new PhantomWalletAdapter(),
-      new SlopeWalletAdapter(),
       new SolflareWalletAdapter(),
       new SolletExtensionWalletAdapter(),
       new TorusWalletAdapter(),
