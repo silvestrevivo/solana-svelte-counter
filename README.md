@@ -1,6 +1,10 @@
 # solana-svelte-counter
 
-**Anchor/SvelteKit** application to demo the Svelte wallet adapter. The Anchor application lives in the `root folder`. In the `app` folder you can find the SvelteKit application.
+**Anchor/SvelteKit** application to demo the Svelte wallet adapter. 
+
+The Anchor application lives in the root of the project. 
+
+The SvelteKit application lives in the `app` folder.
 
 ## Anchor Setup
 
