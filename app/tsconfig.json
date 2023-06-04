@@ -13,5 +13,6 @@
       "$lib/*": ["src/lib/*"],
       "$blocks/*": ["src/blocks/*"]
     }
-  }
+  },
+  "exclude": ["node_modules"]
 }
