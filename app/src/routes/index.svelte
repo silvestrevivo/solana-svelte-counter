@@ -89,7 +89,7 @@
     color: white;
   }
   .wrapper-app {
-    height: 100vh;
+    height: 100dvh;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS',
       sans-serif;
   }
