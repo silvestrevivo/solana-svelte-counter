@@ -37,3 +37,17 @@ npm run dev
 You will also need to configure your installed wallet to work with localhost. For example, in Solflare:
 
 `⚙️` > `Network` > `Add custom node +` then add `localnet` with the address `http://127.0.0.1:8899`.
+
+### Troubleshooting
+
+If you recieve a console error about:
+
+> Attempt to debit an account but found no record of a prior credit
+
+You will need to [Airdrop your wallet some tokens on your localhost RPC](https://docs.solana.com/cli/transfer-tokens).
+
+Eg:
+
+```
+solana airdrop 1 <your wallet address>
+```
