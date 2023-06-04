@@ -75,9 +75,9 @@
         <button on:click={createCounter}>Create counter</button>
       {/if}
     </div>
-    <p>You are connected to localhost!</p>
+    <p class="status">You are connected to localhost!</p>
   {:else}
-    <p class="warning">You are not connected...</p>
+    <p class="status warning">You are not connected...</p>
   {/if}
 </div>
 
@@ -88,11 +88,13 @@
     background-color: #333333;
     color: white;
   }
+  
   .wrapper-app {
     height: 100dvh;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS',
       sans-serif;
   }
+
   .title {
     text-align: center;
     color: white;
@@ -136,10 +138,13 @@
     color: white;
   }
 
-  .warning {
-    color: #ca4b4b;
+  .status {
     text-align: center;
     padding: 40px;
     font-size: 20px;
+  }
+
+  .warning {
+    color: #ca4b4b;
   }
 </style>
