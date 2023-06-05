@@ -40,9 +40,9 @@ You will also need to configure your installed wallet to work with localhost. Fo
 
 ### Troubleshooting
 
-If you recieve a console error about:
+If, after hitting 'Create Counter' you recieve a console error about:
 
-> Attempt to debit an account but found no record of a prior credit
+> Attempt to debit an account but found no record of a prior credit.
 
 You will need to [Airdrop your wallet some tokens on your localhost RPC](https://docs.solana.com/cli/transfer-tokens).
 
