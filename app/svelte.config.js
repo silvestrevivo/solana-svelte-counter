@@ -6,9 +6,6 @@ const config = {
 
   kit: {
     adapter: adapter(),
-    prerender: {
-      default: true,
-    },
   },
 
   // Fix https://stackoverflow.com/questions/74974066/visible-non-interactive-elements-with-an-onclick-event-must-be-accompanied-by

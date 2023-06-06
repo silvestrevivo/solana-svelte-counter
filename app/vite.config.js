@@ -1,18 +1,18 @@
 import { sveltekit } from '@sveltejs/kit/vite';
-import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
+import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
 import inject from '@rollup/plugin-inject';
-import nodePolyfills from "rollup-plugin-node-polyfills";
+import nodePolyfills from 'rollup-plugin-node-polyfills';
 import path from 'path';
 
 /** @type {import('vite').UserConfig} */
 const config = {
-	plugins: [sveltekit()],
+  plugins: [sveltekit()],
   optimizeDeps: {
     include: ['@project-serum/anchor', '@solana/web3.js'],
     esbuildOptions: {
-			target: 'esnext',
+      target: 'esnext',
       plugins: [NodeGlobalsPolyfillPlugin({ buffer: true })],
-		},
+    },
   },
   resolve: {
     alias: {
@@ -21,19 +21,19 @@ const config = {
     },
   },
   define: {
-    // This makes @project-serum/anchor 's process error not happen since it replaces all instances of process.env.BROWSER with true
+    // This makes @project-serum/anchor's process error not happen since it replaces all instances of process.env.BROWSER with true
     'process.env.BROWSER': true,
     'process.env.NODE_DEBUG': JSON.stringify(''),
   },
   build: {
-		target: 'esnext',
-    commonjsOptions: {
-      transformMixedEsModules: true
-    },
+    target: 'esnext',
     rollupOptions: {
-      plugins: [inject({ Buffer: ['buffer', 'Buffer'] }), nodePolyfills({ crypto: true })],
+      plugins: [
+        inject({ Buffer: ['buffer', 'Buffer'] }),
+        nodePolyfills({ crypto: true }),
+      ],
     },
-	}
+  },
 };
 
 export default config;

@@ -1,17 +1,11 @@
 <script lang="ts">
-  import { WalletMultiButton } from '@svelte-on-solana/wallet-adapter-ui';
+  import { test, WalletMultiButton } from '@svelte-on-solana/wallet-adapter-ui';
   import { walletStore } from '@svelte-on-solana/wallet-adapter-core';
-
-  // Error: "Cannot find module '@svelte-on-solana/wallet-adapter-core' or its corresponding type declarations." when installed via a file:// dependency in app
-  // TODO:
-  // Try copying files into node modules (not using a file:// dependency)
-  // Compare core package.json and core index files.
-  // Restart vscode in between
-
   import { workSpace } from '@svelte-on-solana/wallet-adapter-anchor';
   import { fly } from 'svelte/transition';
 
   let value;
+  test();
 
   $: value, console.log(`Counter value is: ${value || 'unset'}`);
 
