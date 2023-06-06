@@ -10,7 +10,7 @@ The SvelteKit application lives in the `app` folder.
 
 Make sure that you have [installed Solana CLI tools locally](https://docs.solana.com/cli/install-solana-cli-tools).
 
-You need to have Cargo and Rust installed to build the contract. 
+You need to have Cargo and Rust installed to build the on-chain app. 
 
 First of all, clone the repo and run `npm install` to add all the dependencies to the Anchor application. 
 
