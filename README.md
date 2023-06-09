@@ -1,16 +1,26 @@
 # solana-svelte-counter
 
-**Anchor/SvelteKit** application to demo the Svelte wallet adapter. The Anchor application lives in the `root folder`. In the `app` folder you can find the SvelteKit application.
+**Anchor/SvelteKit** application to demo the Svelte wallet adapter. 
+
+The Anchor application lives in the root of the project. 
+
+The SvelteKit application lives in the `app` folder.
 
 ## Anchor Setup
 
-You need to have Cargo and Rust installed to build the contract. First of all, clone the repo and run `yarn install` to add all the dependencies to the Anchor application. Make sure that you have Solana locally in `localhost` and change all the **`devnet`** references to `localhost`. Once that is done, to `build` and `deploy` locally the project run the next command:
+Make sure that you have [installed Solana CLI tools locally](https://docs.solana.com/cli/install-solana-cli-tools).
+
+You need to have Cargo and Rust installed to build the on-chain app. 
+
+First of all, clone the repo and run `npm install` to add all the dependencies to the Anchor application. 
+
+To build and deploy the project locally, run the command:
 
 ```
-anchor localnet
+npx anchor localnet
 ```
 
-This command is going to generate the `idl json` file responsible to communicate with the **rpc** from Solana.
+This command is going to generate the `idl json` file responsible for communicating with the **RPC** from Solana.
 
 ## Frontend setup
 
@@ -20,4 +30,24 @@ Frontend is build with SvelteKit. To run it on `localhost:3000`
 cd app
 npm install
 npm run dev
+```
+
+## Wallet localhost setup
+
+You will also need to configure your installed wallet to work with localhost. For example, in Solflare:
+
+`⚙️` > `Network` > `Add custom node +` then add `localnet` with the address `http://127.0.0.1:8899`.
+
+### Troubleshooting
+
+If, after hitting 'Create Counter' you recieve a console error about:
+
+> Attempt to debit an account but found no record of a prior credit.
+
+You will need to [Airdrop your wallet some tokens on your localhost RPC](https://docs.solana.com/cli/transfer-tokens).
+
+Eg:
+
+```
+solana airdrop 1 <your wallet address>
 ```

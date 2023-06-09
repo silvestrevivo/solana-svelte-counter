@@ -8,10 +8,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "sourceMap": true,
-    "paths": {
-      "$lib": ["src/lib"],
-      "$lib/*": ["src/lib/*"],
-      "$blocks/*": ["src/blocks/*"]
-    }
-  }
+    "ignoreDeprecations": "5.0"
+  },
+  "exclude": ["node_modules"]
 }

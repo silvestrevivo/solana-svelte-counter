@@ -1,12 +1,12 @@
-[programs.devnet]
+[programs.localnet]
 solana_svelte_counter = "C7SGr2s3HdBuEveTahL9H3CsXQDwxkYEUSRPeJAVeDN5"
 
 [registry]
 url = "https://anchor.projectserum.com"
 
 [provider]
-cluster = "devnet"
-wallet = "/Users/silvestrevivo/.config/solana/id.json"
+cluster = "localnet"
+wallet = "~/.config/solana/id.json"
 
 [scripts]
 test = "mocha -t 1000000 tests/"

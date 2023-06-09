@@ -1,12 +1,13 @@
 <script lang="ts">
-  import { WalletMultiButton } from '@svelte-on-solana/wallet-adapter-ui';
+  import { test, WalletMultiButton } from '@svelte-on-solana/wallet-adapter-ui';
   import { walletStore } from '@svelte-on-solana/wallet-adapter-core';
   import { workSpace } from '@svelte-on-solana/wallet-adapter-anchor';
   import { fly } from 'svelte/transition';
 
   let value;
+  test();
 
-  $: console.log('value: ', value);
+  $: value, console.log(`Counter value is: ${value || 'unset'}`);
 
   async function createCounter() {
     try {
@@ -49,8 +50,8 @@
     <p>
       Demo of <a href="https://github.com/solana-labs/wallet-adapter"
         >svelte-on-solana/wallet-adapter</a
-      >, for implementation in Svelte of the
-      <strong>wallet adapter</strong>
+      >, to implement the
+      <strong>wallet adapter</strong> in Svelte.
     </p>
   </div>
 
@@ -75,9 +76,9 @@
         <button on:click={createCounter}>Create counter</button>
       {/if}
     </div>
-    <p class="warning">You are connected to DevNet!</p>
+    <p class="status">You are connected to localhost!</p>
   {:else}
-    <p class="warning">You are not connected...</p>
+    <p class="status warning">You are not connected...</p>
   {/if}
 </div>
 
@@ -86,12 +87,15 @@
     padding: 100px;
     margin: 0;
     background-color: #333333;
+    color: white;
   }
+
   .wrapper-app {
-    height: 100vh;
+    height: 100dvh;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS',
       sans-serif;
   }
+
   .title {
     text-align: center;
     color: white;
@@ -114,7 +118,6 @@
   .wrapper-content {
     border-radius: 5px;
     padding: 50px;
-    width: 400px;
     margin: 0 auto;
     text-align: center;
     margin-bottom: 30px;
@@ -136,10 +139,13 @@
     color: white;
   }
 
-  .warning {
-    color: #ca4b4b;
+  .status {
     text-align: center;
     padding: 40px;
     font-size: 20px;
+  }
+
+  .warning {
+    color: #ca4b4b;
   }
 </style>
